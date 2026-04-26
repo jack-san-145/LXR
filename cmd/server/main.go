@@ -2,13 +2,12 @@ package main
 
 import (
 	"log"
+	"lxr-d/internal/handlers"
 	"net"
 	"net/http"
 	"os"
 	"os/user"
 	"strconv"
-
-	"github.com/go-chi/chi/v5"
 )
 
 func main() {
@@ -18,9 +17,6 @@ func main() {
 	if err != nil {
 		log.Println("Old Sock remove Error: ", err)
 	}
-
-	r := chi.NewRouter()
-	r.Get("/ping", PingHanlder)
 
 	listener, err := net.Listen("unix", lxr_sock)
 	if err != nil {
@@ -43,15 +39,12 @@ func main() {
 		log.Println("chmod Error: ", err)
 	}
 
+	LXRHandler := handlers.NewHandler()
+	router := NewRouter(LXRHandler)
 	//start the server
 	log.Println("Server Listening ....")
-	err = http.Serve(listener, r)
+	err = http.Serve(listener, router)
 	if err != nil {
 		log.Fatal("Server Failed to start: ", err)
 	}
-}
-
-func PingHanlder(w http.ResponseWriter, r *http.Request) {
-	log.Println("calling")
-	w.Write([]byte("Pong\n"))
 }
