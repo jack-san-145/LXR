@@ -1,10 +1,13 @@
 package handlers
 
-import ()
+import "lxr-d/internal/models"
 
 type LXRHandler struct {
+	ContainerManager *models.ContainerManager
 }
 
 func NewHandler() *LXRHandler {
-	return &LXRHandler{}
+	return &LXRHandler{
+		ContainerManager: models.NewContainerManager(),
+	}
 }
