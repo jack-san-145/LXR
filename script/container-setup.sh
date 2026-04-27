@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -ex
+
 ROOT_FS=/home/jack/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/rootfs
 
 mount --make-rprivate /
