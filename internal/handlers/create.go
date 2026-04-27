@@ -22,27 +22,27 @@ func (h *LXRHandler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Creation Error: ", err)
 		return
 	}
-	err = RootfsSetup(con)
+	err = RootfsSetup(&con)
 	if err != nil {
 		log.Println("Error during RootfsSetup: ", err)
 		response.WriteJson(w, models.CreationResponse{IsCreated: false})
 		return
 	}
 	response.WriteJson(w, models.CreationResponse{
-		IsCreated:     false,
+		IsCreated:     true,
 		ContainerName: con.ContainerName,
 		ContainerId:   con.ContainerId,
 	})
 
 }
 
-func RootfsSetup(con models.Container) error {
+func RootfsSetup(con *models.Container) error {
 	id := uuid.New()
-	container_id := strings.Join(strings.Split(id.String(), "-"), "")
+	con.ContainerId = strings.Join(strings.Split(id.String(), "-"), "")
 
 	container_name_env := "CONTAINER_NAME=" + con.ContainerName
 	image_name_env := "IMAGE_NAME=" + con.Image
-	container_id_env := "CONTAINER_ID=" + container_id
+	container_id_env := "CONTAINER_ID=" + con.ContainerId
 
 	cmd := exec.Command("../../script/rootfs-setup.sh")
 	cmd.Env = append(os.Environ(),
