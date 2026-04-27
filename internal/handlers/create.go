@@ -34,6 +34,8 @@ func (h *LXRHandler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		ContainerId:   con.ContainerId,
 	})
 
+	h.Helper.ContainerManager.AllContainers[con.ContainerName] = &con
+
 }
 
 func RootfsSetup(con *models.Container) error {
