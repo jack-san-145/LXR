@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"lxr-d/internal/models"
+	"lxr-d/internal/response"
 	"net/http"
 	"os"
 	"os/exec"
@@ -15,17 +16,27 @@ import (
 
 func (h *LXRHandler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
-	var con models.NewContainer
+	var con models.Container
 	err := json.NewDecoder(r.Body).Decode(&con)
 	if err != nil {
 		log.Println("Creation Error: ", err)
 		return
 	}
+	err = RootfsSetup(con)
+	if err != nil {
+		log.Println("Error during RootfsSetup: ", err)
+		response.WriteJson(w, models.CreationResponse{IsCreated: false})
+		return
+	}
+	response.WriteJson(w, models.CreationResponse{
+		IsCreated:     false,
+		ContainerName: con.ContainerName,
+		ContainerId:   con.ContainerId,
+	})
 
-	RootfsSetup(con)
 }
 
-func RootfsSetup(con models.NewContainer) {
+func RootfsSetup(con models.Container) error {
 	id := uuid.New()
 	container_id := strings.Join(strings.Split(id.String(), "-"), "")
 
@@ -45,6 +56,7 @@ func RootfsSetup(con models.NewContainer) {
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println("Error rootfs setup : ", err)
+		return err
 	}
-
+	return nil
 }
