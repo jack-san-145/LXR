@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 func (h *LXRHandler) RunHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +40,13 @@ func ContainerSetup(container *models.Container) error {
 		"bash",
 		"../../script/container-setup.sh",
 	)
+
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Credential: &syscall.Credential{
+			Uid: 1000, // non-root
+			Gid: 1000,
+		},
+	}
 
 	cmd.Env = append(os.Environ(),
 		container_name_env,
