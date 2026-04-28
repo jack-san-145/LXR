@@ -8,16 +8,17 @@ type Container struct {
 	Port          int    `json:"port"`
 	IpAddress     string `json:"ip_address"`
 	Bridge        string `json:"bridge"`
+	PID           int    `json:"pid"`
 }
 
 type ContainerManager struct {
 	AllContainers    map[string]*Container
-	ActiveContainers map[string]*Container
+	ActiveContainers map[string]*int
 }
 
 func NewContainerManager() *ContainerManager {
 	return &ContainerManager{
 		AllContainers:    map[string]*Container{},
-		ActiveContainers: map[string]*Container{},
+		ActiveContainers: map[string]*int{},
 	}
 }
