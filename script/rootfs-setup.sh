@@ -12,11 +12,11 @@ docker create --name $CONTAINER_NAME $IMAGE_NAME
 
 docker export $CONTAINER_NAME > $CONTAINER_NAME-roofs.tar
 
-sudo tar -xf $CONTAINER_NAME-roofs.tar -C rootfs
+tar -xf $CONTAINER_NAME-roofs.tar -C rootfs
 
-#sudo chown $USER:lxr -R rootfs
+chown jack:lxr -R rootfs
 
-sudo chmod 775 rootfs/dev
+chmod 775 rootfs/dev
 
 #ls -l rootfs
 

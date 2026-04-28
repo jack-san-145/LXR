@@ -28,7 +28,7 @@ umount -l /old_root
 
 mount -t tmpfs tmpfs /tmp
 
-hostname $HOSTNAME
+#hostname $HOSTNAME
 
 # run container app
 exec /bin/bash
