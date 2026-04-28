@@ -13,5 +13,6 @@ func NewRouter(lxr *handlers.LXRHandler) *chi.Mux {
 	r.Get("/ping", lxr.PingHanlder)
 
 	r.Post("/create", lxr.CreateHandler)
+	r.Get("/run", lxr.RunHandler)
 	return r
 }
