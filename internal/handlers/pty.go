@@ -10,6 +10,16 @@ import (
 )
 
 func (h *LXRHandler) ExecHandler(w http.ResponseWriter, r *http.Request) {
+
+	//check the container is running if true get its pid
+	con_name := r.URL.Query().Get("container_name")
+	pid, ok := h.Helper.GetContainerPid(con_name)
+	if !ok || pid == "" {
+		log.Println("container not running")
+		return
+	}
+
+	//hijack the http connnection and stream i/o in real-time over uds
 	hijacker, ok := w.(http.Hijacker)
 	if !ok {
 		http.Error(w, "Hijack not supported", http.StatusInternalServerError)
@@ -17,6 +27,7 @@ func (h *LXRHandler) ExecHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	conn, _, err := hijacker.Hijack()
 
+	//run cmd in pseudo terminal for given container
 	cmd := exec.Command(
 		"nsenter",
 		"--target", pid,
