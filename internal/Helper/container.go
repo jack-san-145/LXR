@@ -23,3 +23,18 @@ func (h *Helper) SaveContainerState() {
 
 	}
 }
+
+func (h *Helper) BackupContainerState() {
+
+	file, err := os.Open("/home/jack/LXR-data/Container-state.json")
+	if err != nil {
+		log.Println("Json extraction error: ", err)
+		return
+	}
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(h.ContainerManager)
+	if err != nil {
+		log.Println("JSON decode error: ", err)
+	}
+
+}
