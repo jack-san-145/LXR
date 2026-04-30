@@ -9,7 +9,7 @@ import (
 	"github.com/creack/pty"
 )
 
-func (h *LXRHandler) ExecHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ExecHandler(w http.ResponseWriter, r *http.Request) {
 
 	//check the container is running if true get its pid
 	con_name := r.URL.Query().Get("container_name")

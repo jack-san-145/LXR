@@ -14,7 +14,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h *LXRHandler) CreateHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	var con models.Container
 	err := json.NewDecoder(r.Body).Decode(&con)

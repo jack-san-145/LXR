@@ -6,7 +6,7 @@ import (
 )
 
 type App struct {
-	Handler *handlers.LXRHandler
+	Handler *handlers.Handler
 	Helper  *helper.Helper
 }
 

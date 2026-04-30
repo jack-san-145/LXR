@@ -4,12 +4,12 @@ import (
 	helper "lxr-d/internal/Helper"
 )
 
-type LXRHandler struct {
+type Handler struct {
 	Helper *helper.Helper
 }
 
-func NewHandler() *LXRHandler {
-	return &LXRHandler{
+func NewHandler() *Handler {
+	return &Handler{
 		Helper: helper.NewHelper(),
 	}
 }

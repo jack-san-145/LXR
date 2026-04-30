@@ -10,7 +10,7 @@ import (
 	"syscall"
 )
 
-func (h *LXRHandler) RunHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) RunHandler(w http.ResponseWriter, r *http.Request) {
 
 	con_name := r.URL.Query().Get("container_name")
 
