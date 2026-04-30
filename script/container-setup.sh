@@ -38,4 +38,4 @@ umount -l /old_root
 mount -t tmpfs tmpfs /tmp
 
 #root process of the container
-exec /bin/bash
+exec sleep infinity
