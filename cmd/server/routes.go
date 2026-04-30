@@ -6,14 +6,14 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func NewRouter(lxr *handlers.LXRHandler) *chi.Mux {
+func NewRouter(h *handlers.Handler) *chi.Mux {
 
 	r := chi.NewRouter()
 
-	r.Get("/ping", lxr.PingHanlder)
+	r.Get("/ping", h.PingHanlder)
 
-	r.Post("/create", lxr.CreateHandler)
-	r.Get("/run", lxr.RunHandler)
-	r.Get("/exec", lxr.ExecHandler)
+	r.Post("/create", h.CreateHandler)
+	r.Get("/run", h.RunHandler)
+	r.Get("/exec", h.ExecHandler)
 	return r
 }
