@@ -14,5 +14,6 @@ func NewRouter(lxr *handlers.LXRHandler) *chi.Mux {
 
 	r.Post("/create", lxr.CreateHandler)
 	r.Get("/run", lxr.RunHandler)
+	r.Get("/exec", lxr.ExecHandler)
 	return r
 }
