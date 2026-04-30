@@ -5,11 +5,11 @@ import (
 )
 
 type LXRHandler struct {
-	Helper           *helper.Helper
+	Helper *helper.Helper
 }
 
 func NewHandler() *LXRHandler {
 	return &LXRHandler{
-		Helper:           helper.NewHelper(),
+		Helper: helper.NewHelper(),
 	}
 }
