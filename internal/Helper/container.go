@@ -17,13 +17,7 @@ func (h *Helper) SaveContainerState() {
 
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", " ")
-	active_containers := h.ContainerManager.ActiveContainers
-	all_containers := h.ContainerManager.AllContainers
-
-	state_json := map[string]any{"Active_containers": active_containers, "all_containers": all_containers}
-
-	log.Println("state_json ", state_json)
-	err = encoder.Encode(state_json)
+	err = encoder.Encode(h.ContainerManager)
 	if err != nil {
 		log.Println("Json encode error: ", err)
 
