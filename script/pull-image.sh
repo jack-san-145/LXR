@@ -25,4 +25,11 @@ https://registry-1.docker.io/v2/library/$IMAGE/manifests/latest > manifest.json
 MANIFEST_DIGEST=$(jq -r '.manifests[] | select(.platform.architecture == "arm64" and .platform.os == "linux") | .digest' manifest.json)
 
 
-
+#request manifest for the specific platform & architecure with its digest
+#JSON response contains layers list that is known as blob (Binary Large Object) ,each layers has binary of the actual rootfs
+#iterate layers list and extract only the digest for each layers and that has been stored to the variable LAYERS
+LAYERS=$(curl -s \
+-H "Authorization: Bearer $TOKEN" \
+-H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+https://registry-1.docker.io/v2/library/$IMAGE/manifests/$MANIFEST_DIGEST\
+| jq -r '.layers[].digest')
