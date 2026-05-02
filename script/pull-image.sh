@@ -71,3 +71,7 @@ for DIGEST in $LAYERS;do
    (( COUNT++))
 done
 
+
+#remove the manifest file 
+rm $LXR_IMAGE_REG/manifest.json
+
