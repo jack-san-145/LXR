@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	helper "lxr-d/internal/Helper"
+	helper "lxr-d/internal/helper"
 )
 
 type Handler struct {
