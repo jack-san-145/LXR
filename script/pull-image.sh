@@ -2,12 +2,15 @@
 
 set -ex
 
+#create a registry to store the actual image rootfs of LXR
+mkdir -p /home/LXR/LXR-registry/$IMAGE
+
+
 # request an token for the specific repo to fetch oci images
 #-s ignores the progress bar and error msg ,just give the json token response and that passed as input to the jq(JSON parser) that parse that JSON response and return only the token field (-r means return raw data (without any quotes)
 TOKEN=$(curl -s \
 "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/$IMAGE:pull" \
 | jq -r .token)
-
 
 
 #Add token in http header and request with it to get manifest list
@@ -17,7 +20,6 @@ curl -s
 -H "Authorization: Bearer $TOKEN" \
 -H "Accept: application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json" \
 https://registry-1.docker.io/v2/library/$IMAGE/manifests/latest > manifest.json
-
 
 
 #extract only the manifest json that has arm64 and linux in manifest list from the manifest.json using jq 
@@ -33,3 +35,16 @@ LAYERS=$(curl -s \
 -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
 https://registry-1.docker.io/v2/library/$IMAGE/manifests/$MANIFEST_DIGEST\
 | jq -r '.layers[].digest')
+
+
+COUNT=1
+for DIGEST in $LAYERS;do
+    LAYER_NAME="/home/LXR/LXR-registry/$IMAGE/layer$COUNT.tar.gz"
+
+    curl -L -s \
+    -H "Authorization: Bearer $TOKEN" \
+    "https://registry-1.docker.io/v2/library/$IMAGE/blobs/$DIGEST" \
+    -o "$LAYER_NAME"
+
+   (( COUNT++))
+done
