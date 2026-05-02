@@ -9,3 +9,12 @@ TOKEN=$(curl -s \
 | jq -r .token)
 
 
+#Add token in http header and request with it to get manifest list
+#manifest list is an list of references (digests) to image manifests for different platforms & architecture 
+#the manifest JSON response is stored to the manifest.json
+curl -s 
+-H "Authorization: Bearer $TOKEN" \
+-H "Accept: application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json" \
+https://registry-1.docker.io/v2/library/$IMAGE/manifests/latest > manifest.json
+
+
