@@ -3,7 +3,7 @@
 set -ex
 
 #create a registry to store the actual image rootfs of LXR
-mkdir -p /home/LXR/LXR-registry/$IMAGE
+mkdir -p /home/LXR/LXR-registry/$IMAGE/rootfs
 
 LXR_IMAGE_REG=/home/LXR/LXR-registry/$IMAGE
 
@@ -50,7 +50,8 @@ for DIGEST in $LAYERS;do
     "https://registry-1.docker.io/v2/library/$IMAGE/blobs/$DIGEST" \
     -o "$LAYER_NAME"
 
- 
+    #untar the layer and store it to rootfs
+    tar -xf $LAYER_NAME -C $LXR_IMAGE_REG/rootfs
 
    (( COUNT++))
 done
