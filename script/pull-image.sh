@@ -5,6 +5,8 @@ set -ex
 #create a registry to store the actual image rootfs of LXR
 mkdir -p /home/LXR/LXR-registry/$IMAGE
 
+LXR_IMAGE_REG=/home/LXR/LXR-registry/$IMAGE
+
 
 # request an token for the specific repo to fetch oci images
 #-s ignores the progress bar and error msg ,just give the json token response and that passed as input to the jq(JSON parser) that parse that JSON response and return only the token field (-r means return raw data (without any quotes)
@@ -37,14 +39,18 @@ https://registry-1.docker.io/v2/library/$IMAGE/manifests/$MANIFEST_DIGEST\
 | jq -r '.layers[].digest')
 
 
+#for loop to iterate the digest list
 COUNT=1
 for DIGEST in $LAYERS;do
-    LAYER_NAME="/home/LXR/LXR-registry/$IMAGE/layer$COUNT.tar.gz"
+    LAYER_NAME="$LXR_IMAGE_REG/layer$COUNT.tar.gz"
 
+    #request blob for each digest in a list and store it as a layerx.tar.gz
     curl -L -s \
     -H "Authorization: Bearer $TOKEN" \
     "https://registry-1.docker.io/v2/library/$IMAGE/blobs/$DIGEST" \
     -o "$LAYER_NAME"
+
+ 
 
    (( COUNT++))
 done
