@@ -2,11 +2,12 @@
 
 set -ex
 
-# request an token to fetch oci images
+# request an token for the specific repo to fetch oci images
 #-s ignores the progress bar and error msg ,just give the json token response and that passed as input to the jq(JSON parser) that parse that JSON response and return only the token field (-r means return raw data (without any quotes)
 TOKEN=$(curl -s \
 "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/$IMAGE:pull" \
 | jq -r .token)
+
 
 
 #Add token in http header and request with it to get manifest list
@@ -16,5 +17,12 @@ curl -s
 -H "Authorization: Bearer $TOKEN" \
 -H "Accept: application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json" \
 https://registry-1.docker.io/v2/library/$IMAGE/manifests/latest > manifest.json
+
+
+
+#extract only the manifest json that has arm64 and linux in manifest list from the manifest.json using jq 
+#extract the digest (unique ID for manifest) from the retrieved manifest json 
+MANIFEST_DIGEST=$(jq -r '.manifests[] | select(.platform.architecture == "arm64" and .platform.os == "linux") | .digest' manifest.json)
+
 
 
