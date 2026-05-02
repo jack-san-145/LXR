@@ -46,6 +46,13 @@ https://registry-1.docker.io/v2/library/$IMAGE/manifests/$MANIFEST_DIGEST\
 
 
 
+#refresh token again to avoid expiry issue while fetching blob
+TOKEN=$(curl -s \
+"https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/$IMAGE:pull" \
+| jq -r .token)
+
+
+
 #for loop to iterate the digest list
 COUNT=1
 for DIGEST in $LAYERS;do
