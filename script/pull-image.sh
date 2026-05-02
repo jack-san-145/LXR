@@ -53,5 +53,7 @@ for DIGEST in $LAYERS;do
     #untar the layer and store it to rootfs
     tar -xf $LAYER_NAME -C $LXR_IMAGE_REG/rootfs
 
+    rm $LAYER_NAME
    (( COUNT++))
 done
+
