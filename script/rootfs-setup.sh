@@ -10,7 +10,7 @@ mkdir -p /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID
 cp -r /home/LXR/LXR-registry/$IMAGE_NAME /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/
 
 #enter into it
-cd /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID
+cd /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME
 
 #change the rootfs ownership
 chown jack:lxr -R rootfs
