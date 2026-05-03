@@ -11,6 +11,7 @@ import (
 )
 
 func (h *Helper) RootfsSetup(con *models.Container) error {
+
 	id := uuid.New()
 	con.ContainerId = strings.Join(strings.Split(id.String(), "-"), "")
 
@@ -42,5 +43,6 @@ func (h *Helper) RootfsSetup(con *models.Container) error {
 		fmt.Println("Error rootfs setup : ", err)
 		return err
 	}
+
 	return nil
 }

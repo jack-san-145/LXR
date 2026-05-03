@@ -18,6 +18,7 @@ func (h *Helper) ContainerSetup(container *models.Container) error {
 		"unshare",
 		"--pid",
 		"--mount",
+		"--uts",
 		"--map-root-user",
 		"--fork",
 		"--",

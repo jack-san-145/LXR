@@ -23,10 +23,8 @@ func (h *Helper) CheckImageLocally(image string) bool {
 	}
 
 	if info.IsDir() {
-		log.Println(info.Name())
-		log.Println("info: ", info)
-		log.Println("folder exists")
+		return true
 
 	}
-	return true
+	return false
 }
