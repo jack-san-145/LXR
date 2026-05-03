@@ -13,7 +13,7 @@ func NewRouter(h *handlers.Handler) *chi.Mux {
 	r.Get("/ping", h.PingHanlder)
 
 	r.Post("/create", h.CreateHandler)
-	r.Get("/run", h.RunHandler)
+	r.Get("/start", h.StartHandler)
 	r.Get("/exec", h.ExecHandler)
 	r.Post("/pull_image", h.PullImageHandler)
 	return r

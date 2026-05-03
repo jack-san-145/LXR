@@ -29,11 +29,11 @@ func main() {
 
 	//context to listen the interrupt signal
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 	<-ctx.Done()
 
 	//when interrupt occurs save container state ,then stop the daemon
 	Lxr.Helper.SaveContainerState()
-	defer stop()
 
 }
 

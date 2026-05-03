@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (h *Handler) RunHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) StartHandler(w http.ResponseWriter, r *http.Request) {
 
 	con_name := r.URL.Query().Get("container_name")
 
