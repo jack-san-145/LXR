@@ -8,8 +8,8 @@ type Handler struct {
 	Helper *helper.Helper
 }
 
-func NewHandler() *Handler {
+func NewHandler(helper *helper.Helper) *Handler {
 	return &Handler{
-		Helper: helper.NewHelper(),
+		Helper: helper,
 	}
 }
