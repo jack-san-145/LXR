@@ -1,17 +1,16 @@
 package helper
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
 )
 
-func (h *Helper) PullImage(image string) error {
+func (h *Helper) PullImage(image string) (bool, error) {
 
 	exits := h.CheckImageLocally(image)
 	if exits {
-		return fmt.Errorf("Image already exists locally")
+		return true, nil
 	}
 	image_env := "IMAGE=" + image
 	cmd := exec.Command("../../script/pull-image.sh")
@@ -25,7 +24,7 @@ func (h *Helper) PullImage(image string) error {
 	err := cmd.Run()
 	if err != nil {
 		log.Println("Error rootfs setup : ", err)
-		return err
+		return false, err
 	}
-	return nil
+	return false, nil
 }
