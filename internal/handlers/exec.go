@@ -3,6 +3,7 @@ package handlers
 import (
 	"io"
 	"log"
+	"lxr-d/internal/response"
 	"net/http"
 	"os/exec"
 
@@ -16,7 +17,7 @@ func (h *Handler) ExecHandler(w http.ResponseWriter, r *http.Request) {
 	pid, ok := h.Helper.GetContainerPid(con_name)
 	if !ok || pid == "" {
 		log.Println("container not running")
-		return
+		response.WriteJson(w, "Container not Found\n")
 	}
 
 	//hijack the http connnection and stream i/o in real-time over uds
@@ -31,7 +32,7 @@ func (h *Handler) ExecHandler(w http.ResponseWriter, r *http.Request) {
 	cmd := exec.Command(
 		"nsenter",
 		"--target", pid,
-		"--pid", "--mount",
+		"--pid", "--mount", "--uts",
 		"bash",
 	)
 
@@ -40,7 +41,11 @@ func (h *Handler) ExecHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Pty Error: ", err)
 		return
 	}
-	defer ptmx.Close()
+
+	defer func() {
+		ptmx.Close()
+		conn.Close()
+	}()
 
 	go io.Copy(ptmx, conn)
 	go io.Copy(conn, ptmx)
