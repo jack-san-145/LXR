@@ -12,6 +12,7 @@ func (h *Helper) ContainerSetup(container *models.Container) error {
 
 	container_name_env := "CONTAINER_NAME=" + container.ContainerName
 	container_id_env := "CONTAINER_ID=" + container.ContainerId
+	img_name_env := "IMAGE=" + container.Image
 
 	cmd := exec.Command(
 		"unshare",
@@ -35,7 +36,8 @@ func (h *Helper) ContainerSetup(container *models.Container) error {
 	//inject env to the script
 	cmd.Env = append(os.Environ(),
 		container_name_env,
-		container_id_env)
+		container_id_env,
+		img_name_env)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
