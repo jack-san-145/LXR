@@ -1,12 +1,18 @@
 package helper
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
 )
 
 func (h *Helper) PullImage(image string) error {
+
+	exits := h.CheckImageLocally(image)
+	if exits {
+		return fmt.Errorf("Image already exists locally")
+	}
 	image_env := "IMAGE=" + image
 	cmd := exec.Command("../../script/pull-image.sh")
 	cmd.Env = append(cmd.Environ(),

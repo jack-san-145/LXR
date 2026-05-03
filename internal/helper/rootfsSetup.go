@@ -21,7 +21,10 @@ func (h *Helper) RootfsSetup(con *models.Container) error {
 	//to check the image locally
 	exists := h.CheckImageLocally(con.Image)
 	if !exists {
-		h.PullImage(con.Image)
+		err := h.PullImage(con.Image)
+		if err != nil {
+			return err
+		}
 	}
 
 	//run the script with env
