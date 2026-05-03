@@ -3,7 +3,7 @@
 set -ex
 
 #directory to store the container's data
-ROOT_FS=/home/jack/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/rootfs
+ROOT_FS=/home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE/rootfs
 
 #after this mount wont affects the host 
 mount --make-rprivate /
