@@ -16,7 +16,8 @@ func (h *Helper) PullImage(image string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	err := cmd.Run()
+	//run at background
+	err := cmd.Start()
 	if err != nil {
 		log.Println("Error rootfs setup : ", err)
 		return err
