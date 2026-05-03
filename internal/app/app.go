@@ -1,8 +1,8 @@
 package app
 
 import (
-	helper "lxr-d/internal/Helper"
 	"lxr-d/internal/handlers"
+	helper "lxr-d/internal/helper"
 )
 
 type App struct {
@@ -11,8 +11,10 @@ type App struct {
 }
 
 func NewApp() *App {
+	helper := helper.NewHelper()
+
 	return &App{
-		Handler: handlers.NewHandler(),
-		Helper:  helper.NewHelper(),
+		Handler: handlers.NewHandler(helper),
+		Helper:  helper,
 	}
 }
