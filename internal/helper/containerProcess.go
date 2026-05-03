@@ -8,5 +8,8 @@ func (h *Helper) GetContainerPid(name string) (string, bool) {
 
 	pid, ok := h.ContainerManager.ActiveContainers[name]
 
-	return strconv.Itoa(*pid), ok
+	if pid != nil {
+		return strconv.Itoa(*pid), ok
+	}
+	return "", false
 }

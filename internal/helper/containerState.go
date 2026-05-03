@@ -9,7 +9,7 @@ import (
 func (h *Helper) SaveContainerState() {
 
 	log.Println("calling container state")
-	file, err := os.Create("/home/jack/LXR-data/Container-state.json")
+	file, err := os.Create("/home/LXR/Container-state.json")
 	if err != nil {
 		log.Println("Json creation error: ", err)
 		return
@@ -26,7 +26,7 @@ func (h *Helper) SaveContainerState() {
 
 func (h *Helper) BackupContainerState() {
 
-	file, err := os.Open("/home/jack/LXR-data/Container-state.json")
+	file, err := os.Open("/home/LXR/Container-state.json")
 	if err != nil {
 		log.Println("Json extraction error: ", err)
 		return
