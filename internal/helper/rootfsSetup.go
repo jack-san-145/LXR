@@ -18,6 +18,13 @@ func (h *Helper) RootfsSetup(con *models.Container) error {
 	image_name_env := "IMAGE_NAME=" + con.Image
 	container_id_env := "CONTAINER_ID=" + con.ContainerId
 
+	//to check the image locally
+	exists := h.CheckImageLocally(con.Image)
+	if !exists {
+		h.PullImage(con.Image)
+	}
+
+	//run the script with env
 	cmd := exec.Command("../../script/rootfs-setup.sh")
 	cmd.Env = append(os.Environ(),
 		container_name_env,

@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func checkImageLocally(image string) bool {
+func (h *Helper) CheckImageLocally(image string) bool {
 	path := "/home/LXR/LXR-registry/" + image
 	info, err := os.Stat(path)
 
