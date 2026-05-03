@@ -37,5 +37,8 @@ umount -l /old_root
 #mount temporary fs to /tmp
 mount -t tmpfs tmpfs /tmp
 
+#make container name as container's hostname
+hostname $CONTAINER_NAME
+
 #root process of the container
 exec sleep infinity
