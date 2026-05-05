@@ -16,6 +16,14 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Creation Error: ", err)
 		return
 	}
+	exists := h.Helper.ContainerExists(con.ContainerName)
+	if exists {
+		response.WriteJson(w, models.CreationResponse{
+			IsCreated:     false,
+			AlreadyExists: true,
+		})
+		return
+	}
 	err = h.Helper.RootfsSetup(&con)
 	if err != nil {
 		log.Println("Error during RootfsSetup: ", err)
