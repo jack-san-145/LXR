@@ -20,3 +20,9 @@ func (h *Helper) ContainerExists(name string) bool {
 	_, ok := h.ContainerManager.AllContainers[name]
 	return ok
 }
+
+// check container currently active or not
+func (h *Helper) ContainerActive(name string) bool {
+	_, ok := h.ContainerManager.ActiveContainers[name]
+	return ok
+}
