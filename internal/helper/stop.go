@@ -21,5 +21,9 @@ func (h *Helper) StopProcess(name string) (bool, error) {
 	}
 
 	err = ps.Kill()
+	if err == nil {
+		delete(h.ContainerManager.ActiveContainers, name)
+	}
+
 	return exists, err
 }
