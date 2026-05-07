@@ -13,3 +13,8 @@ type StartResponse struct {
 	Failed        bool `json:"failed"`
 	DoesNotExists bool `json:"exists"`
 }
+
+type StopResponse struct {
+	Exists  bool `json:"container_exists"`
+	Stopped bool `json:"container_Stoped"`
+}
