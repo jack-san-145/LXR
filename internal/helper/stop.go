@@ -1,16 +1,14 @@
 package helper
 
 import (
-	"log"
 	"os"
 	"strconv"
 )
 
-func (h *Helper) StopProcess(name string) (bool, error) {
+func (h *Helper) StopContainer(name string) (bool, error) {
 
 	pid, exists := h.GetContainerPid(name)
 	if !exists {
-		log.Println("Process does not exists")
 		return exists, nil
 	}
 	pid_int, _ := strconv.Atoi(pid)
@@ -24,6 +22,5 @@ func (h *Helper) StopProcess(name string) (bool, error) {
 	if err == nil {
 		delete(h.ContainerManager.ActiveContainers, name)
 	}
-
 	return exists, err
 }

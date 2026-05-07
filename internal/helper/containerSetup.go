@@ -52,5 +52,9 @@ func (h *Helper) ContainerSetup(container *models.Container) error {
 	container.PID = cmd.Process.Pid
 	fmt.Println("container Pid = ", container.PID)
 
+	// waits for child exit signal and reaps the process
+	go func() {
+		cmd.Wait()
+	}()
 	return nil
 }
