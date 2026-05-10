@@ -27,6 +27,7 @@ func main() {
 	cidr, _ := strconv.Atoi(os.Getenv("CIDR"))
 	totalUsableHost, _ := strconv.Atoi(os.Getenv("TOTAL_USABLE_HOST"))
 
+	//create IpStack with own lxr network
 	ipStack := ip.IpStack{
 		Network:         os.Getenv("NETWORK"),
 		Cidr:            cidr,
@@ -37,13 +38,13 @@ func main() {
 		TotalUsableHost: totalUsableHost,
 	}
 
-	//create a runtime named Lxr
+	//create a runtime named Lxr with its own ipStack
 	Lxr := app.NewApp(&ipStack)
 
-	//creates a chi router
+	//creates a chi router with LXR handler
 	router := NewRouter(Lxr.Handler)
 
-	listener := Lxr.Helper.InitDaemon() //start the daemon initialization
+	listener := Lxr.Helper.InitDaemon() //start the daemon initialization and return listener for unix sock connection
 
 	Lxr.Helper.BackupContainerState() //backup existing container state
 
