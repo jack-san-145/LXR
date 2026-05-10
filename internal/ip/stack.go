@@ -1,6 +1,6 @@
 package ip
 
-import ()
+import "errors"
 
 type IpStack struct {
 	Stack           *Stack
@@ -32,4 +32,15 @@ func (s Stack) IsEmpty() bool {
 
 func (s Stack) Push(ip string) {
 	s.Stack = append(s.Stack, ip)
+}
+
+func (s Stack) Pop() (string, error) {
+	len := len(s.Stack)
+
+	if s.IsEmpty() {
+		ip := s.Stack[len-1]
+		s.Stack = s.Stack[:len-1]
+		return ip, nil
+	}
+	return "", errors.New("Stack Empty")
 }
