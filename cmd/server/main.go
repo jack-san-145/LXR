@@ -4,19 +4,41 @@ import (
 	"context"
 	"log"
 	"lxr-d/internal/app"
+	"lxr-d/internal/ip"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 
+	//to load .env file
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		log.Fatal("Error loading .env")
+	}
+
+	cidr, _ := strconv.Atoi(os.Getenv("CIDR"))
+	totalUsableHost, _ := strconv.Atoi(os.Getenv("TOTAL_USABLE_HOST"))
+
+	ipStack := ip.IpStack{
+		Network:         os.Getenv("NETWORK"),
+		Cidr:            cidr,
+		IpStartRange:    os.Getenv("IP_START_RANGE"),
+		IpEndRange:      os.Getenv("IP_END_RANGE"),
+		NetworkAddr:     os.Getenv("NETWORK_ADDR"),
+		BroadCastAddr:   os.Getenv("BROADCAST_ADDR"),
+		TotalUsableHost: totalUsableHost,
+	}
+
 	//create a runtime named Lxr
-	Lxr := app.NewApp()
+	Lxr := app.NewApp(&ipStack)
 
 	//creates a chi router
 	router := NewRouter(Lxr.Handler)
