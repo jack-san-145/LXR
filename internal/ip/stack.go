@@ -22,3 +22,7 @@ type Stack struct {
 func (s Stack) Push(ip string) {
 	s.Stack = append(s.Stack, ip)
 }
+
+func (s Stack) Size() int {
+	return len(s.Stack)
+}
