@@ -18,3 +18,7 @@ type IpStack struct {
 type Stack struct {
 	Stack []string
 }
+
+func (s Stack) Push(ip string) {
+	s.Stack = append(s.Stack, ip)
+}
