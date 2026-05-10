@@ -57,7 +57,6 @@ func main() {
 
 	//when interrupt occurs save container state ,then stop the daemon
 	Lxr.Helper.SaveContainerState()
-
 }
 
 func runServer(router *chi.Mux, listener net.Listener) {
