@@ -3,12 +3,12 @@ package ip
 import "errors"
 
 // to find the size of stack
-func (s Stack) Size() int {
+func (s *Stack) Size() int {
 	return len(s.Stack)
 }
 
 // to check whether the stack is empty or not
-func (s Stack) IsEmpty() bool {
+func (s *Stack) IsEmpty() bool {
 	if s.Size() != 0 {
 		return false
 	}
@@ -16,12 +16,12 @@ func (s Stack) IsEmpty() bool {
 }
 
 // to insert ip to the stack
-func (s Stack) Push(ip string) {
+func (s *Stack) Push(ip string) {
 	s.Stack = append(s.Stack, ip)
 }
 
 // get ip from stack
-func (s Stack) Pop() (string, error) {
+func (s *Stack) Pop() (string, error) {
 	len := len(s.Stack)
 
 	if s.IsEmpty() {
