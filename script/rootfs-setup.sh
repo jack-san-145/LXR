@@ -17,6 +17,11 @@ cp /usr/bin/ping /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME/ro
 
 cp /usr/bin/ip /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME/rootfs/usr/bin
 
+#copy missed libraries from host to container to use ip cmd
+cp /lib/aarch64-linux-gnu/libbpf.so.0 rootfs/lib/aarch64-linux-gnu/
+cp /lib/aarch64-linux-gnu/libelf.so.1 rootfs/lib/aarch64-linux-gnu/
+cp /lib/aarch64-linux-gnu/libmnl.so.0 rootfs/lib/aarch64-linux-gnu/
+
 #change the rootfs ownership
 chown jack:lxr -R rootfs
 
