@@ -12,11 +12,16 @@ cp -r /home/LXR/LXR-registry/$IMAGE_NAME /home/LXR/LXR-data/$CONTAINER_NAME-$CON
 #enter into it
 cd /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME
 
+#copy ping and ip binary from host to container to use ping and ip cmds inside container
+cp /usr/bin/ping /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME/rootfs/usr/bin
+
+cp /usr/bin/ip /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME/rootfs/usr/bin
+
 #change the rootfs ownership
 chown jack:lxr -R rootfs
 
 #give permissions for /dev to create null further
 chmod 775 rootfs/dev
 
-#copy ping binary from host to container to use ping inside container
-cp /usr/bin/ping /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME/rootfs/usr/bin
+
+
