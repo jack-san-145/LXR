@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 #make the output tracable
@@ -26,40 +25,32 @@ declare -a ip_libraries
 container_rootfs=/home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME/rootfs
 
 #append all libraries required for ip iperation to arr
-$ip_libraries+=("/lib/aarch64-linux-gnu/libbpf.so.0")
-$ip_libraries+=("/lib/aarch64-linux-gnu/libelf.so.1")
-$ip_libraries+=("/lib/aarch64-linux-gnu/libmnl.so.0")
-$ip_libraries+=("/lib/aarch64-linux-gnu/libbsd.so.0")
-$ip_libraries+=("/lib/aarch64-linux-gnu/libcap.so.2")
-$ip_libraries+=("/lib/aarch64-linux-gnu/libc.so.6")
-$ip_libraries+=("/lib/aarch64-linux-gnu/libz.so.1")
-$ip_libraries+=("/lib/aarch64-linux-gnu/libmd.so.0")
+ip_libraries+=("/lib/aarch64-linux-gnu/libbpf.so.0")
+ip_libraries+=("/lib/aarch64-linux-gnu/libelf.so.1")
+ip_libraries+=("/lib/aarch64-linux-gnu/libmnl.so.0")
+ip_libraries+=("/lib/aarch64-linux-gnu/libbsd.so.0")
+ip_libraries+=("/lib/aarch64-linux-gnu/libcap.so.2")
+ip_libraries+=("/lib/aarch64-linux-gnu/libz.so.1")
+ip_libraries+=("/lib/aarch64-linux-gnu/libmd.so.0")
+ip_libraries+=("/lib/aarch64-linux-gnu/libidn2.so.0")
+ip_libraries+=("/lib/aarch64-linux-gnu/libunistring.so.2")
+ip_libraries+=("/lib/aarch64-linux-gnu/libcrypto.so.3")
 
 #loader that loads all the libraries dynamically
 dynamic_loader=/lib/ld-linux-aarch64.so.1 
 
 
 #use for loop to iterate ip_libraries
-for library in $ip_libraries;do
+for library in "${ip_libraries[@]}";do
 
     #check if the file exists or not inside container
-    if [[ -f $container_rootfs+$library ]];then
+    if [[ -f "${container_rootfs}${library}" ]];then
+        echo "file already exists : $library"
+    else
         cp $library $container_rootfs/lib/aarch64-linux-gnu/
         echo "$library copied to container"
-    else
-        echo "file not found: $library"
     fi
 done
-
-
-#check if path exists inside container and copy dynamic_loader to container
-if [[ -f $container_rootfs+$dynamic_loader ]];then
-    cp $dynamic_loader $container_rootfs/lib/
-    echo "$dynamic_loader copied to container"
-else
-    echo "loader not found: $dynamic_loader"
-fi
-
 
 #change the rootfs ownership
 chown jack:lxr -R rootfs
