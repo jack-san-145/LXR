@@ -38,6 +38,7 @@ $ip_libraries+=("/lib/aarch64-linux-gnu/libmd.so.0")
 #loader that loads all the libraries dynamically
 dynamic_loader=/lib/ld-linux-aarch64.so.1 
 
+
 #use for loop to iterate ip_libraries
 for library in $ip_libraries;do
 
@@ -50,6 +51,14 @@ for library in $ip_libraries;do
     fi
 done
 
+
+#check if path exists inside container and copy dynamic_loader to container
+if [[ -f $container_rootfs+$dynamic_loader ]];then
+    cp $dynamic_loader $container_rootfs/lib/
+    echo "$dynamic_loader copied to container"
+else
+    echo "loader not found: $dynamic_loader"
+fi
 
 
 #change the rootfs ownership
