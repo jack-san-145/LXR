@@ -12,6 +12,8 @@ type IpStack struct {
 	Stack           *Stack
 	Network         string
 	Cidr            int
+	BridgeName      string
+	BridgeIp        string
 	IpStartRange    string
 	IpEndRange      string
 	NetworkAddr     string

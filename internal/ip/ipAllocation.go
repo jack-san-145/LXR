@@ -8,7 +8,11 @@ import (
 
 // return lxr's default bridge 'lxr0'
 func (ips *IpStack) UseBridge() string {
-	return "lxr0"
+	return ips.BridgeName
+}
+
+func (ips *IpStack) GetBrigeIp() string {
+	return ips.BridgeIp
 }
 
 // to create the ip with all 4 octets
@@ -46,7 +50,9 @@ func (ips *IpStack) RefillIp() {
 	first, _ := strconv.Atoi(net_arr[0])
 	second, _ := strconv.Atoi(net_arr[1])
 	third, _ := strconv.Atoi(net_arr[2])
-	fourth, _ := strconv.Atoi(net_arr[3])
+
+	//extract 10.10.10.10 from 10.10.10.10/17
+	fourth, _ := strconv.Atoi(strings.Split(net_arr[3], "/")[0])
 
 	//find broadcast addr 3rd octet
 	broadcast_addr, _ := strconv.Atoi(strings.Split(ips.BroadCastAddr, ".")[2])
