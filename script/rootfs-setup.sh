@@ -38,6 +38,18 @@ $ip_libraries+=("/lib/aarch64-linux-gnu/libmd.so.0")
 #loader that loads all the libraries dynamically
 dynamic_loader=/lib/ld-linux-aarch64.so.1 
 
+#use for loop to iterate ip_libraries
+for library in $ip_libraries;do
+
+    #check if the file exists or not inside container
+    if [[ -f $container_rootfs+$library ]];then
+        cp $library $container_rootfs/lib/aarch64-linux-gnu/
+        echo "$library copied to container"
+    else
+        echo "file not found: $library"
+    fi
+done
+
 
 
 #change the rootfs ownership
