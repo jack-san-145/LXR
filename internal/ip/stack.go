@@ -2,6 +2,11 @@ package ip
 
 import ()
 
+// stack to hold the ip addresses
+type Stack struct {
+	Stack []string
+}
+
 // ipstack to hold the ips and details of the network
 type IpStack struct {
 	Stack           *Stack
@@ -14,11 +19,6 @@ type IpStack struct {
 	TotalUsableHost int
 	HostUsed        int
 	LastUsedIp      string
-}
-
-// stack to hold the ip addresses
-type Stack struct {
-	Stack []string
 }
 
 // function to create a new IpStack
