@@ -26,6 +26,9 @@ nsenter -t $CONTAINER_PID --net \
 nsenter -t $CONTAINER_PID --net \
     ip link set lo up
 
+#add default route as bridge to route unknown traffic
+nsenter -t $CONTAINER_PID --net \
+    ip route add default via $BRIDGE_IP
 
 
 
