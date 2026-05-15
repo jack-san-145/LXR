@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"fmt"
 	"log"
 	"lxr-d/internal/models"
 	"os"
@@ -41,6 +42,13 @@ func (h *Helper) SetupContainerNetworking(con *models.Container) error {
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
+	//run script in foreground
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Error container networking setup : ", err)
+		return err
+	}
 
 	return nil
 }
