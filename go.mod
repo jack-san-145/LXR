@@ -7,4 +7,6 @@ require (
 	github.com/google/uuid v1.6.0
 )
 
+require github.com/joho/godotenv v1.5.1 // direct
+
 require github.com/creack/pty v1.1.24 // direct
