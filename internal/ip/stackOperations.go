@@ -25,9 +25,10 @@ func (s *Stack) Pop() (string, error) {
 	len := len(s.Stack)
 
 	if s.IsEmpty() {
-		ip := s.Stack[len-1]
-		s.Stack = s.Stack[:len-1]
-		return ip, nil
+		return "", errors.New("Stack Empty")
 	}
-	return "", errors.New("Stack Empty")
+	ip := s.Stack[len-1]
+	s.Stack = s.Stack[:len-1]
+	return ip, nil
+
 }
