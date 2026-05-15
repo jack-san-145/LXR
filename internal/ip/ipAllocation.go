@@ -7,6 +7,16 @@ import (
 	"strings"
 )
 
+// return lxr's default bridge 'lxr0'
+func (ips *IpStack) UseBridge() string {
+	return ips.BridgeName
+}
+
+func (ips *IpStack) GetBrigeIp() string {
+	log.Println("bridge ip from get : ", ips.BridgeIp)
+	return ips.BridgeIp
+}
+
 // to create the ip with all 4 octets
 func (ips *IpStack) MakeIp(first, second, third, fourth int) string {
 	return fmt.Sprintf("%v.%v.%v.%v/%v", first, second, third, fourth, ips.Cidr)
