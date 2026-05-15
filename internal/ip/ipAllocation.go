@@ -2,30 +2,24 @@ package ip
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
 
-// return lxr's default bridge 'lxr0'
-func (ips *IpStack) UseBridge() string {
-	return ips.BridgeName
-}
-
-func (ips *IpStack) GetBrigeIp() string {
-	return ips.BridgeIp
-}
-
 // to create the ip with all 4 octets
 func (ips *IpStack) MakeIp(first, second, third, fourth int) string {
-	return fmt.Sprintf("%v.%v.%v.%v", first, second, third, fourth)
+	return fmt.Sprintf("%v.%v.%v.%v/%v", first, second, third, fourth, ips.Cidr)
 }
 
 func (ips *IpStack) PushToStack(Ip_Arr []string) {
 
+	var count int
 	//iterate ip array reversely to store the ips in asending order
-	for i := len(Ip_Arr) - 1; i <= 0; i-- {
+	for i := len(Ip_Arr) - 1; i >= 0; i-- {
 
 		ips.Stack.Push(Ip_Arr[i])
+		count++
 	}
 
 }
@@ -34,7 +28,11 @@ func (ips *IpStack) AllocateIp() string {
 	if ips.Stack.IsEmpty() {
 		ips.RefillIp()
 	}
-	ip, _ := ips.Stack.Pop()
+	ip, err := ips.Stack.Pop()
+	if err != nil {
+		log.Println("pop error:", err)
+	}
+	log.Println("allocated ip in stack: ", ip)
 	return ip
 
 }
