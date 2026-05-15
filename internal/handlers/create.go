@@ -16,6 +16,8 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Creation Error: ", err)
 		return
 	}
+
+	//check the container already exists or not
 	exists := h.Helper.ContainerExists(con.ContainerName)
 	if exists {
 		response.WriteJson(w, models.CreationResponse{
@@ -24,18 +26,23 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
+	//if not already exists creats new container environment (only setup containers rootfs)
 	err = h.Helper.RootfsSetup(&con)
 	if err != nil {
 		log.Println("Error during RootfsSetup: ", err)
 		response.WriteJson(w, models.CreationResponse{IsCreated: false})
 		return
 	}
+
+	//send container creattion response to client
 	response.WriteJson(w, models.CreationResponse{
 		IsCreated:     true,
 		ContainerName: con.ContainerName,
 		ContainerId:   con.ContainerId,
 	})
 
+	//add newly created container to allContainers
 	h.Helper.ContainerManager.AllContainers[con.ContainerName] = &con
 
 }
