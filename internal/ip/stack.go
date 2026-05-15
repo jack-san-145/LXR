@@ -9,7 +9,7 @@ type Stack struct {
 
 // ipstack to hold the ips and details of the network
 type IpStack struct {
-	Stack           *Stack
+	Stack           Stack
 	Network         string
 	Cidr            int
 	BridgeName      string
@@ -29,13 +29,15 @@ func NewIpStack(ipstack IpStack) *IpStack {
 		Stack:           ipstack.Stack,
 		Network:         ipstack.Network,
 		Cidr:            ipstack.Cidr,
+		BridgeName:      ipstack.BridgeName,
+		BridgeIp:        ipstack.BridgeIp,
 		IpStartRange:    ipstack.IpStartRange,
 		IpEndRange:      ipstack.IpEndRange,
 		NetworkAddr:     ipstack.NetworkAddr,
 		BroadCastAddr:   ipstack.BroadCastAddr,
 		TotalUsableHost: ipstack.TotalUsableHost,
 		HostUsed:        ipstack.HostUsed,
-		LastUsedIp:      ipstack.NetworkAddr,
+		LastUsedIp:      ipstack.BridgeIp, //assign bridge ip to last used ip in this network
 	}
 
 }
