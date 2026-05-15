@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #make the output tracable
-set -ex
+#set -ex
 
 #create seperate directory for each container with its containerName+containerID
 mkdir -p /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID
@@ -45,10 +45,10 @@ for library in "${ip_libraries[@]}";do
 
     #check if the file exists or not inside container
     if [[ -f "${container_rootfs}${library}" ]];then
-        echo "file already exists : $library"
+        echo "file already exists "
     else
         cp $library $container_rootfs/lib/aarch64-linux-gnu/
-        echo "$library copied to container"
+        echo "copied to container"
     fi
 done
 
