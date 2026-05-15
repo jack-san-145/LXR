@@ -31,6 +31,8 @@ func main() {
 	ipStack := ip.IpStack{
 		Network:         os.Getenv("NETWORK"),
 		Cidr:            cidr,
+		BridgeName:      "lxr0",
+		BridgeIp:        os.Getenv("BRIDGE_IP"),
 		IpStartRange:    os.Getenv("IP_START_RANGE"),
 		IpEndRange:      os.Getenv("IP_END_RANGE"),
 		NetworkAddr:     os.Getenv("NETWORK_ADDR"),
