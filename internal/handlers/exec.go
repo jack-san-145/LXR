@@ -32,7 +32,7 @@ func (h *Handler) ExecHandler(w http.ResponseWriter, r *http.Request) {
 	cmd := exec.Command(
 		"nsenter",
 		"--target", pid,
-		"--pid", "--mount", "--uts",
+		"--pid", "--mount", "--uts", "--net",
 		"bash",
 	)
 

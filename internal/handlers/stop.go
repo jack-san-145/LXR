@@ -10,7 +10,7 @@ func (h *Handler) StopHandler(w http.ResponseWriter, r *http.Request) {
 
 	con_name := r.URL.Query().Get("container_name")
 
-	exists, err := h.Helper.StopProcess(con_name)
+	exists, err := h.Helper.StopContainer(con_name)
 	if !exists || err != nil {
 		response.WriteJson(w, models.StopResponse{
 			Exists:  exists,
