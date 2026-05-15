@@ -19,6 +19,7 @@ func (h *Helper) ContainerSetup(container *models.Container) error {
 		"--pid",
 		"--mount",
 		"--uts",
+		"--net",
 		"--map-root-user",
 		"--fork",
 		"--",
