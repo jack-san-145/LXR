@@ -50,5 +50,7 @@ func (h *Helper) SetupContainerNetworking(con *models.Container) error {
 		return err
 	}
 
+	//update last used ip address with container ip
+	h.IpStack.SetLastUsedIp(con.IpAddress)
 	return nil
 }
