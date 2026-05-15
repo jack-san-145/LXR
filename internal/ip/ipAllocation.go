@@ -17,6 +17,10 @@ func (ips *IpStack) GetBrigeIp() string {
 	return ips.BridgeIp
 }
 
+func (ips *IpStack) SetLastUsedIp(ip string) {
+	ips.LastUsedIp = ip
+}
+
 // to create the ip with all 4 octets
 func (ips *IpStack) MakeIp(first, second, third, fourth int) string {
 	return fmt.Sprintf("%v.%v.%v.%v/%v", first, second, third, fourth, ips.Cidr)
