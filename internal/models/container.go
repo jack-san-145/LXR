@@ -1,14 +1,16 @@
 package models
 
 type Container struct {
-	Image         string `json:"image_name"`
-	ContainerName string `json:"container_name"`
-	ContainerId   string `json:"container_id"`
-	Active        bool   `json:"active"`
-	Port          int    `json:"port"`
-	IpAddress     string `json:"ip_address"`
-	Bridge        string `json:"bridge"`
 	PID           int    `json:"pid"`
+	Image         string `json:"image_name"`
+	ContainerId   string `json:"container_id"`
+	ContainerName string `json:"container_name"`
+	Bridge        string `json:"bridge"`
+	IpAddress     string `json:"ip_address"`
+	Port          int    `json:"port"`
+	Active        bool   `json:"active"`
+	ConVeth       string
+	BrVeth        string
 }
 
 type ContainerManager struct {
