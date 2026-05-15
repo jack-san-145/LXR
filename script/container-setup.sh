@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+#set -ex
 
 #directory to store the container's data
 ROOT_FS=/home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE/rootfs
