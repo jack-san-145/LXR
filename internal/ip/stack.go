@@ -4,7 +4,7 @@ import ()
 
 // stack to hold the ip addresses
 type Stack struct {
-	Stack []string
+	IPPool []string
 }
 
 // NetworkConfig to hold the ipstack and details of the network

@@ -4,7 +4,7 @@ import "errors"
 
 // to find the size of stack
 func (s *Stack) Size() int {
-	return len(s.Stack)
+	return len(s.IPPool)
 }
 
 // to check whether the stack is empty or not
@@ -17,18 +17,18 @@ func (s *Stack) IsEmpty() bool {
 
 // to insert ip to the stack
 func (s *Stack) Push(ip string) {
-	s.Stack = append(s.Stack, ip)
+	s.IPPool = append(s.IPPool, ip)
 }
 
 // get ip from stack
 func (s *Stack) Pop() (string, error) {
-	len := len(s.Stack)
+	len := len(s.IPPool)
 
 	if s.IsEmpty() {
 		return "", errors.New("Stack Empty")
 	}
-	ip := s.Stack[len-1]
-	s.Stack = s.Stack[:len-1]
+	ip := s.IPPool[len-1]
+	s.IPPool = s.IPPool[:len-1]
 	return ip, nil
 
 }
