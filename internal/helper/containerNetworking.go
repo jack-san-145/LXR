@@ -50,7 +50,10 @@ func (h *Helper) SetupContainerNetworking(con *models.Container) error {
 		return err
 	}
 
-	//update last used ip address with container ip
-	h.NetworkConfig.SetLastUsedIp(con.IpAddress)
+	//find largest ip between container ip and network's LastUsedIP
+	largestIP := h.NetworkConfig.FindLargestIP(con.IpAddress, h.NetworkConfig.LastUsedIP)
+
+	//update largest ip address to network's LastUsedIP
+	h.NetworkConfig.SetLastUsedIp(largestIP)
 	return nil
 }
