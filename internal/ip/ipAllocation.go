@@ -1,42 +1,10 @@
 package ip
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
 )
-
-// return lxr's default bridge 'lxr0'
-func (nc *NetworkConfig) UseBridge() string {
-	return nc.BridgeName
-}
-
-func (nc *NetworkConfig) GetBrigeIp() string {
-	log.Println("bridge ip from get : ", nc.BridgeIP)
-	return nc.BridgeIP
-}
-
-func (nc *NetworkConfig) SetLastUsedIp(ip string) {
-	nc.LastUsedIP = ip
-}
-
-// to create the ip with all 4 octets
-func (nc *NetworkConfig) MakeIp(first, second, third, fourth int) string {
-	return fmt.Sprintf("%v.%v.%v.%v/%v", first, second, third, fourth, nc.CIDR)
-}
-
-func (nc *NetworkConfig) PushToStack(Ip_Arr []string) {
-
-	var count int
-	//iterate ip array reversely to store the ip addresses in asending order
-	for i := len(Ip_Arr) - 1; i >= 0; i-- {
-
-		nc.IPStack.Push(Ip_Arr[i])
-		count++
-	}
-
-}
 
 func (nc *NetworkConfig) AllocateIp() string {
 	if nc.IPStack.IsEmpty() {
@@ -95,5 +63,17 @@ func (nc *NetworkConfig) RefillIp() {
 		}
 	}
 	nc.PushToStack(Ip_Arr)
+
+}
+
+func (nc *NetworkConfig) PushToStack(Ip_Arr []string) {
+
+	var count int
+	//iterate ip array reversely to store the ip addresses in asending order
+	for i := len(Ip_Arr) - 1; i >= 0; i-- {
+
+		nc.IPStack.Push(Ip_Arr[i])
+		count++
+	}
 
 }
