@@ -58,5 +58,8 @@ func (h *Helper) KillContainer(con *models.Container) error {
 	//remove killed container from containerManager
 	delete(h.ContainerManager.ActiveContainers, con.ContainerName)
 	delete(h.ContainerManager.AllContainers, con.ContainerName)
+
+	//put back the container's ip address to IPPool
+	h.NetworkConfig.ReturnIPToPool(con.IpAddress)
 	return nil
 }
