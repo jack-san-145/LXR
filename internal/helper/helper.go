@@ -7,12 +7,12 @@ import (
 
 type Helper struct {
 	ContainerManager *models.ContainerManager
-	IpStack          *ip.IpStack
+	NetworkConfig    *ip.NetworkConfig
 }
 
-func NewHelper(stack *ip.IpStack) *Helper {
+func NewHelper(networkConfig *ip.NetworkConfig) *Helper {
 	return &Helper{
 		ContainerManager: models.NewContainerManager(),
-		IpStack:          ip.NewIpStack(*stack),
+		NetworkConfig:    ip.NewNetwork(*networkConfig),
 	}
 }

@@ -7,18 +7,18 @@ import (
 )
 
 type App struct {
-	Handler *handlers.Handler
-	Helper  *helper.Helper
-	IpStack *ip.IpStack
+	Handler       *handlers.Handler
+	Helper        *helper.Helper
+	NetworkConfig *ip.NetworkConfig
 }
 
-func NewApp(ipStack *ip.IpStack) *App {
+func NewApp(newNetwork *ip.NetworkConfig) *App {
 
-	helper := helper.NewHelper(ipStack)
+	helper := helper.NewHelper(newNetwork)
 
 	return &App{
-		Handler: handlers.NewHandler(helper),
-		Helper:  helper,
-		IpStack: ipStack,
+		Handler:       handlers.NewHandler(helper),
+		Helper:        helper,
+		NetworkConfig: newNetwork,
 	}
 }

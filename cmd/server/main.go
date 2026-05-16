@@ -28,20 +28,20 @@ func main() {
 	totalUsableHost, _ := strconv.Atoi(os.Getenv("TOTAL_USABLE_HOST"))
 
 	//create IpStack with own lxr network
-	ipStack := ip.IpStack{
+	networkConfig := ip.NetworkConfig{
 		Network:         os.Getenv("NETWORK"),
-		Cidr:            cidr,
+		CIDR:            cidr,
 		BridgeName:      "lxr0",
-		BridgeIp:        os.Getenv("BRIDGE_IP"),
-		IpStartRange:    os.Getenv("IP_START_RANGE"),
-		IpEndRange:      os.Getenv("IP_END_RANGE"),
+		BridgeIP:        os.Getenv("BRIDGE_IP"),
+		IPStartRange:    os.Getenv("IP_START_RANGE"),
+		IPEndRange:      os.Getenv("IP_END_RANGE"),
 		NetworkAddr:     os.Getenv("NETWORK_ADDR"),
-		BroadCastAddr:   os.Getenv("BROADCAST_ADDR"),
+		BroadcastAddr:   os.Getenv("BROADCAST_ADDR"),
 		TotalUsableHost: totalUsableHost,
 	}
 
 	//create a runtime named Lxr with its own ipStack
-	Lxr := app.NewApp(&ipStack)
+	Lxr := app.NewApp(&networkConfig)
 
 	//creates a chi router with LXR handler
 	router := NewRouter(Lxr.Handler)

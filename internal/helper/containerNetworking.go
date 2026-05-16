@@ -12,10 +12,10 @@ import (
 func (h *Helper) SetupContainerNetworking(con *models.Container) error {
 
 	//use lxr defaulat bridge
-	con.Bridge = h.IpStack.UseBridge()
+	con.Bridge = h.NetworkConfig.UseBridge()
 
 	//allocate ip address for container
-	con.IpAddress = h.IpStack.AllocateIp()
+	con.IpAddress = h.NetworkConfig.AllocateIp()
 
 	log.Println("container ip: ", con.IpAddress)
 	//create veth pairs
@@ -26,7 +26,7 @@ func (h *Helper) SetupContainerNetworking(con *models.Container) error {
 	container_pid_env := "CONTAINER_PID=" + strconv.Itoa(con.PID)
 	container_ip_env := "CONTAINER_IP=" + con.IpAddress
 	container_veth_env := "CONTAINER_VETH=" + con.ConVeth
-	bridge_ip_env := "BRIDGE_IP=" + h.IpStack.GetBrigeIp()
+	bridge_ip_env := "BRIDGE_IP=" + h.NetworkConfig.GetBrigeIp()
 	bridge_veth_env := "BRIDGE_VETH=" + con.BrVeth
 
 	cmd := exec.Command("bash", "../../script/ip-setup.sh")
@@ -51,6 +51,6 @@ func (h *Helper) SetupContainerNetworking(con *models.Container) error {
 	}
 
 	//update last used ip address with container ip
-	h.IpStack.SetLastUsedIp(con.IpAddress)
+	h.NetworkConfig.SetLastUsedIp(con.IpAddress)
 	return nil
 }
