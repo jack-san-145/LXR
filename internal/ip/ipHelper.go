@@ -26,6 +26,11 @@ func (nc *NetworkConfig) MakeIp(first, second, third, fourth int) string {
 	return fmt.Sprintf("%v.%v.%v.%v/%v", first, second, third, fourth, nc.CIDR)
 }
 
+// put back the used container's ip address to IPPool
+func (nc *NetworkConfig) ReturnIPToPool(ip string) {
+	nc.IPStack.Push(ip)
+}
+
 func (nc *NetworkConfig) FindLargestIP(IP1, IP2 string) string {
 
 	//split both ip's as octet array
