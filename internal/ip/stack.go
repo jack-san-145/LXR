@@ -7,37 +7,37 @@ type Stack struct {
 	Stack []string
 }
 
-// ipstack to hold the ips and details of the network
-type IpStack struct {
-	Stack           Stack
+// NetworkConfig to hold the ipstack and details of the network
+type NetworkConfig struct {
+	IPStack         Stack
 	Network         string
-	Cidr            int
+	CIDR            int
 	BridgeName      string
-	BridgeIp        string
-	IpStartRange    string
-	IpEndRange      string
+	BridgeIP        string
+	IPStartRange    string
+	IPEndRange      string
 	NetworkAddr     string
-	BroadCastAddr   string
+	BroadcastAddr   string
 	TotalUsableHost int
 	HostUsed        int
-	LastUsedIp      string
+	LastUsedIP      string
 }
 
-// function to create a new IpStack
-func NewIpStack(ipstack IpStack) *IpStack {
-	return &IpStack{
-		Stack:           ipstack.Stack,
-		Network:         ipstack.Network,
-		Cidr:            ipstack.Cidr,
-		BridgeName:      ipstack.BridgeName,
-		BridgeIp:        ipstack.BridgeIp,
-		IpStartRange:    ipstack.IpStartRange,
-		IpEndRange:      ipstack.IpEndRange,
-		NetworkAddr:     ipstack.NetworkAddr,
-		BroadCastAddr:   ipstack.BroadCastAddr,
-		TotalUsableHost: ipstack.TotalUsableHost,
-		HostUsed:        ipstack.HostUsed,
-		LastUsedIp:      ipstack.BridgeIp, //assign bridge ip to last used ip in this network
+// function to create a new NetworkConfig
+func NewNetwork(cfg NetworkConfig) *NetworkConfig {
+	return &NetworkConfig{
+		IPStack:         cfg.IPStack,
+		Network:         cfg.Network,
+		CIDR:            cfg.CIDR,
+		BridgeName:      cfg.BridgeName,
+		BridgeIP:        cfg.BridgeIP,
+		IPStartRange:    cfg.IPStartRange,
+		IPEndRange:      cfg.IPEndRange,
+		NetworkAddr:     cfg.NetworkAddr,
+		BroadcastAddr:   cfg.BroadcastAddr,
+		TotalUsableHost: cfg.TotalUsableHost,
+		HostUsed:        cfg.HostUsed,
+		LastUsedIP:      cfg.BridgeIP, //assign bridge ip to last used ip in this network
 	}
 
 }
