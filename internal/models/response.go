@@ -18,3 +18,8 @@ type StopResponse struct {
 	Exists  bool `json:"container_exists"`
 	Stopped bool `json:"container_Stoped"`
 }
+
+type KillResponse struct {
+	Exists  bool `json:"container_exists"`
+	Killed bool `json:"is_killed"`
+}
