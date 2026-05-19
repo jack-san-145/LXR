@@ -19,4 +19,18 @@ func (h *Helper) InstallDependencies(con *models.Container) {
 		"bash", "../../script/install-dependencies.sh",
 	)
 
+	//inject env to the script
+	cmd.Env = append(os.Environ(),
+		pass_env,
+	)
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	//run script in background
+	err := cmd.Start()
+	if err != nil {
+		log.Println("Error container dependencies: ", err)
+	}
+
 }
