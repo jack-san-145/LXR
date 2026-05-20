@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -ex
+set -ex
 
 #directory to store the container's data
 ROOT_FS=/home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE/rootfs
@@ -34,11 +34,17 @@ mount -t proc proc /proc
 #clear old rootfs inside container
 umount -l /old_root
 
-#mount temporary fs to /tmp
-mount -t tmpfs tmpfs /tmp
+#mount pts to /dev/pts and add symlink for ptmx
+mkdir -p /dev/pts
+mount -t devpts devpts /dev/pts
+ln -s /dev/pts/ptmx /dev/ptmx
+
+#clear cache apt modules
+rm -rf /var/lib/apt/lists/*
 
 #make container name as container's hostname
 hostname $CONTAINER_NAME
 
 #root process of the container
 exec sleep infinity
+
