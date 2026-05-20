@@ -3,7 +3,8 @@ package helper
 import (
 	"fmt"
 	"log"
-
+	"lxr-d/internal/models"
+	"os"
 	"os/exec"
 	"strconv"
 )
@@ -33,4 +34,27 @@ func (h *Helper) GetContainerInitPid(conPID int) (string, error) {
 	}
 	initPID := string(out)
 	return initPID, nil
+}
+
+// to create new cgroup for container with limitations
+func (h *Helper) CreateCgroup(con *models.Container) error {
+
+	initPID, err := h.GetContainerInitPid(con.PID)
+	if err != nil {
+		return err
+	}
+
+	base := "/sys/fs/cgroup/lxr/" + con.ContainerName + con.ContainerId
+
+	//creates an base directory
+	os.MkdirAll(base, 0755)
+
+	//limits cpu,pid,ram
+	err = os.WriteFile(base+"/cgroup.procs", []byte(initPID), 0644) //attach container init process with cgroup
+	err = os.WriteFile(base+"/memory.max", []byte(h.MB(256)), 0644) //use 256mb of ram
+	err = os.WriteFile(base+"/cpu.max", []byte(h.CPU(50)), 0644)    //use 50% of cpu
+	err = os.WriteFile(base+"/pids.max", []byte("100"), 0644)       //can spawn upto 100 processes
+
+	return err
+
 }
