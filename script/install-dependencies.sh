@@ -8,10 +8,6 @@ mount -t tmpfs tmpfs /tmp
 #change mode for /tmp
 chmod 1777 /tmp 
 
-#create both randam and urandom for random number generation
-mknod -m 666 /dev/random c 1 8
-mknod -m 666 /dev/urandom c 1 9
-
 #update apt 
 apt update 
 
@@ -23,6 +19,9 @@ apt install iproute2 -y
 
 #install ping globally orelse between containers
 apt install iputils-ping 
+
+#install git
+apt install git
 
 #install code server to use vscode on web
 curl -fsSL https://code-server.dev/install.sh | sh 
@@ -41,7 +40,6 @@ kill -2 $cs_pid
 
 #when code-server starts that created directory with config.yaml 
 #so after that code-server pid killed and now change code-server's password to config file
-
 >  ~/.config/code-server/config.yaml cat << EOF
 bind-addr: 127.0.0.1:8080
 auth: password
@@ -49,5 +47,12 @@ password: $PASSWORD
 cert: false
 EOF
 
-#run again code-server 
-code-server --bind-addr 0.0.0.0:8080 
+#run again code-server in background and redirects its output,errors to null
+nohup code-server --bind-addr 0.0.0.0:8080 > /dev/null 2>&1 &
+
+sleep 2 
+
+#create both randam and urandom for random number generation
+mknod -m 666 /dev/random c 1 8
+mknod -m 666 /dev/urandom c 1 9
+
