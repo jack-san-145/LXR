@@ -3,8 +3,21 @@ package helper
 import (
 	"fmt"
 	"log"
+
 	"os/exec"
+	"strconv"
 )
+
+// to find equivalent bytes for given mb
+func (h *Helper) MB(m int) string {
+	return strconv.Itoa(m * 1024 * 1024) //mb -> kb -> byte
+}
+
+// to find percent for given integer
+func (h *Helper) CPU(percent int) string {
+	quota := percent * 1000
+	return fmt.Sprintf("%v 100000", quota)
+}
 
 // to get container init PID
 func (h *Helper) GetContainerInitPid(conPID int) (string, error) {
