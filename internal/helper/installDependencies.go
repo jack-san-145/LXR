@@ -14,6 +14,7 @@ func (h *Helper) InstallDependencies(con *models.Container) {
 
 	cmd := exec.Command(
 		"nsenter",
+		"-r",
 		"--target", strconv.Itoa(con.PID),
 		"--pid", "--mount", "--uts", "--net",
 		"bash", "../../script/install-dependencies.sh",
