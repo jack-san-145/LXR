@@ -52,4 +52,13 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	conn.Write([]byte("creation started...\n"))
 
+	//to check the image locally
+	exists = h.Helper.CheckImageLocally(conCreater.Container.Image)
+	if !exists {
+		err := h.Helper.PullImage(&conCreater)
+		if err != nil {
+			conCreater.Quit <- struct{}{} //pass quit signal to terminal container creation process
+		}
+	}
+
 }
