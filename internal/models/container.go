@@ -15,7 +15,7 @@ type Container struct {
 	BrVeth        string
 }
 
-// response buffer to store container creation response
+// container creater with client connection and channel
 type ContainerCreater struct {
 	Container *Container
 	Conn      net.Conn
