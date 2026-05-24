@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"lxr-d/internal/models"
 	"strconv"
 )
 
@@ -25,4 +26,9 @@ func (h *Helper) ContainerExists(name string) bool {
 func (h *Helper) ContainerActive(name string) bool {
 	_, ok := h.ContainerManager.ActiveContainers[name]
 	return ok
+}
+
+// add newly created container to allContainers
+func (h *Helper) AddContainer(con *models.Container) {
+	h.ContainerManager.AllContainers[con.ContainerName] = con
 }
