@@ -1,5 +1,7 @@
 package models
 
+import "net"
+
 type Container struct {
 	PID           int    `json:"pid"`
 	Image         string `json:"image_name"`
@@ -11,6 +13,13 @@ type Container struct {
 	Active        bool   `json:"active"`
 	ConVeth       string
 	BrVeth        string
+}
+
+// response buffer to store container creation response
+type ContainerCreater struct {
+	Container      *Container
+	Conn           net.Conn
+	CompleteStatus chan struct{}
 }
 
 type ContainerManager struct {
