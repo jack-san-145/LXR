@@ -10,8 +10,8 @@ import (
 func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("comming inside create")
-	var conCreater models.ContainerCreater
-	err := json.NewDecoder(r.Body).Decode(&conCreater.Container)
+	var conBuilder models.ContainerBuilder
+	err := json.NewDecoder(r.Body).Decode(&conBuilder.Container)
 	if err != nil {
 		log.Println("Creation Error: ", err)
 		return
@@ -38,13 +38,13 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	//use seperate go routine to listen the quit signal for creation termination
 	go func() {
-		<-conCreater.Quit
-		conCreater.Conn.Close()
+		<-conBuilder.Quit
+		conBuilder.Conn.Close()
 
 	}()
 
 	//check the container already exists or not
-	exists := h.Helper.ContainerExists(conCreater.Container.ContainerName)
+	exists := h.Helper.ContainerExists(conBuilder.Container.ContainerName)
 	if exists {
 		conn.Write([]byte("Container Already Exists"))
 		return
@@ -53,27 +53,35 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	conn.Write([]byte("creation started...\n"))
 
 	//to check the image locally
-	exists = h.Helper.CheckImageLocally(conCreater.Container.Image)
+	exists = h.Helper.CheckImageLocally(conBuilder.Container.Image)
 	if !exists {
-		err := h.Helper.PullImage(&conCreater)
+		err := h.Helper.PullImage(&conBuilder)
 		if err != nil {
-			conCreater.Quit <- struct{}{} //pass quit signal to terminal container creation process
+			conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
 		}
 	}
 
 	//if not already exists creats new container environment (only setup containers rootfs)
-	err = h.Helper.RootfsSetup(&conCreater)
+	err = h.Helper.RootfsSetup(&conBuilder)
 	if err != nil {
 		log.Println("Error during RootfsSetup: ", err)
-		conCreater.Quit <- struct{}{} //pass quit signal to terminal container creation process
+		conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
 		return
 	}
 
 	//setup new container with rootfs
-	err = h.Helper.ContainerSetup(conCreater.Container)
+	err = h.Helper.ContainerSetup(conBuilder.Container)
 	if err != nil {
-		conCreater.Quit <- struct{}{} //pass quit signal to terminal container creation process
+		conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
 		return
 	}
-	h.Helper.SetContainerActive(conCreater.Container) //set new container to active state
+	h.Helper.SetContainerActive(conBuilder.Container) //set new container to active state
+
+	//setup networking for container
+	err = h.Helper.SetupContainerNetworking(&conBuilder)
+	if err != nil {
+		conBuilder.Quit <- struct{}{}
+		return
+	}
+
 }
