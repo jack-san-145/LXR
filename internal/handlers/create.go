@@ -68,4 +68,12 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		conCreater.Quit <- struct{}{} //pass quit signal to terminal container creation process
 		return
 	}
+
+	//setup new container with rootfs
+	err = h.Helper.ContainerSetup(conCreater.Container)
+	if err != nil {
+		conCreater.Quit <- struct{}{} //pass quit signal to terminal container creation process
+		return
+	}
+	h.Helper.SetContainerActive(conCreater.Container) //set new container to active state
 }
