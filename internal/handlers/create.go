@@ -10,8 +10,8 @@ import (
 func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("comming inside create")
-	var con models.Container
-	err := json.NewDecoder(r.Body).Decode(&con)
+	var conCreater models.ContainerCreater
+	err := json.NewDecoder(r.Body).Decode(&conCreater.Container)
 	if err != nil {
 		log.Println("Creation Error: ", err)
 		return
@@ -35,6 +35,20 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	buf.WriteString("Content-Type: text/plain\r\n")
 	buf.WriteString("\r\n")
 	buf.Flush()
+
+	//use seperate go routine to listen the quit signal for creation termination
+	go func() {
+		<-conCreater.Quit
+		conCreater.Conn.Close()
+
+	}()
+
+	//check the container already exists or not
+	exists := h.Helper.ContainerExists(conCreater.Container.ContainerName)
+	if exists {
+		conn.Write([]byte("Container Already Exists"))
+		return
+	}
 
 	conn.Write([]byte("creation started...\n"))
 
