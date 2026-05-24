@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"log"
+	"lxr-d/internal/models"
 	"lxr-d/internal/response"
 	"net/http"
 )
@@ -14,22 +15,56 @@ func (h *Handler) PullImageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var image img
+	var builder models.ContainerBuilder
 	err := json.NewDecoder(r.Body).Decode(&image)
 	if err != nil {
 		log.Println("Image Pull Error: ", err)
 		return
 	}
-	log.Println("image from image handler: ", image.ImageName)
 
-	exists, err := h.Helper.PullImage(image.ImageName)
-	if exists {
-		response.WriteJson(w, map[string]string{"status": "Image already exists locally"})
+	builder.Container.Image = image.ImageName
+	//hijack the http connnection and stream i/o in real-time over uds
+	hijacker, ok := w.(http.Hijacker)
+	if !ok {
+		http.Error(w, "Hijack not supported", http.StatusInternalServerError)
 		return
 	}
+	conn, buf, err := hijacker.Hijack()
+	if err != nil {
+		log.Println("Hijack error:", err)
+		return
+	}
+	defer conn.Close()
+
+	//write http success response manually
+	buf.WriteString("HTTP/1.1 200 OK\r\n")
+	buf.WriteString("Content-Type: text/plain\r\n")
+	buf.WriteString("\r\n")
+	buf.Flush()
+
+	//use seperate go routine to listen the quit signal for creation termination
+	go func() {
+		<-builder.Quit
+		builder.Conn.Close()
+
+	}()
+
+	exists := h.Helper.CheckImageLocally(builder.Container.Image)
+	if exists {
+		builder.Conn.Write([]byte("Image already exists locally\n"))
+		builder.Quit <- struct{}{}
+		return
+	}
+
+	err = h.Helper.PullImage(&builder)
+
 	if err != nil {
 		response.WriteJson(w, map[string]string{"status": "Error in Image Pull"})
+		builder.Conn.Write([]byte("Error in Image Pull\n"))
+		builder.Quit <- struct{}{}
 		return
 	}
-	response.WriteJson(w, map[string]string{"status": "Image Pulled Successfully"})
+	builder.Conn.Write([]byte("Image Pulled Successfullyn"))
+	builder.Quit <- struct{}{}
 
 }
