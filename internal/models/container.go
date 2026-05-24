@@ -17,9 +17,9 @@ type Container struct {
 
 // response buffer to store container creation response
 type ContainerCreater struct {
-	Container      *Container
-	Conn           net.Conn
-	CompleteStatus chan struct{}
+	Container *Container
+	Conn      net.Conn
+	Quit      chan struct{}
 }
 
 type ContainerManager struct {
