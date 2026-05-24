@@ -10,23 +10,23 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h *Helper) RootfsSetup(con *models.Container) error {
+func (h *Helper) RootfsSetup(conCreater *models.ContainerCreater) error {
 
 	id := uuid.New()
-	con.ContainerId = strings.Join(strings.Split(id.String(), "-"), "")
+	conCreater.Container.ContainerId = strings.Join(strings.Split(id.String(), "-"), "")
 
-	container_name_env := "CONTAINER_NAME=" + con.ContainerName
-	image_name_env := "IMAGE_NAME=" + con.Image
-	container_id_env := "CONTAINER_ID=" + con.ContainerId
+	container_name_env := "CONTAINER_NAME=" + conCreater.Container.ContainerName
+	image_name_env := "IMAGE_NAME=" + conCreater.Container.Image
+	container_id_env := "CONTAINER_ID=" + conCreater.Container.ContainerId
 
-	//to check the image locally
-	exists := h.CheckImageLocally(con.Image)
-	if !exists {
-		_, err := h.PullImage(con.Image)
-		if err != nil {
-			return err
-		}
-	}
+	// //to check the image locally
+	// exists := h.CheckImageLocally(conCreater.Container.Image)
+	// if !exists {
+	// 	_, err := h.PullImage(conCreater.Container.Image)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	//run the script with env
 	cmd := exec.Command("../../script/rootfs-setup.sh")
@@ -45,4 +45,5 @@ func (h *Helper) RootfsSetup(con *models.Container) error {
 	}
 
 	return nil
+
 }
