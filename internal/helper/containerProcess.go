@@ -32,3 +32,8 @@ func (h *Helper) ContainerActive(name string) bool {
 func (h *Helper) AddContainer(con *models.Container) {
 	h.ContainerManager.AllContainers[con.ContainerName] = con
 }
+
+// add container to ActiveContainers
+func (h *Helper) SetContainerActive(con *models.Container) {
+	h.ContainerManager.ActiveContainers[con.ContainerName] = &con.PID
+}
