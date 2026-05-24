@@ -61,4 +61,11 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	//if not already exists creats new container environment (only setup containers rootfs)
+	err = h.Helper.RootfsSetup(&conCreater)
+	if err != nil {
+		log.Println("Error during RootfsSetup: ", err)
+		conCreater.Quit <- struct{}{} //pass quit signal to terminal container creation process
+		return
+	}
 }
