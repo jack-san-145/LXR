@@ -5,6 +5,7 @@ import (
 	"log"
 	"lxr-d/internal/models"
 	"net/http"
+	"time"
 )
 
 func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -77,8 +78,17 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	h.Helper.SetContainerActive(conBuilder.Container) //set new container to active state
 
+	time.Sleep(time.Second * 3) //wait 3sec to complete container setup
+
 	//setup networking for container
 	err = h.Helper.SetupContainerNetworking(&conBuilder)
+	if err != nil {
+		conBuilder.Quit <- struct{}{}
+		return
+	}
+
+	//create cgroups(memory,cpu,process)limits for new container
+	err = h.Helper.CreateCgroup(conBuilder.Container)
 	if err != nil {
 		conBuilder.Quit <- struct{}{}
 		return
