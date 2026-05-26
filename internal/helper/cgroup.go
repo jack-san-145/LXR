@@ -96,6 +96,7 @@ func (h *Helper) FreezeContainer(containerName string) error {
 		return err
 	}
 
+	h.SetContainerDeactive(containerName)
 	return nil
 }
 
@@ -111,7 +112,7 @@ func (h *Helper) UnfreezeContainer(containerName string) error {
 		log.Println("Unfreeze Error:", err)
 		return err
 	}
-
+	h.SetContainerActive(containerName)
 	return nil
 }
 
