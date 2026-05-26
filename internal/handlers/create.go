@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bufio"
 	"encoding/json"
 	"log"
 	"lxr-d/internal/models"
@@ -11,7 +12,10 @@ import (
 func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("comming inside create")
-	var conBuilder models.ContainerBuilder
+	var (
+		conBuilder models.ContainerBuilder
+		buf        *bufio.ReadWriter
+	)
 	err := json.NewDecoder(r.Body).Decode(&conBuilder.Container)
 	if err != nil {
 		log.Println("Creation Error: ", err)
@@ -24,12 +28,12 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Hijack not supported", http.StatusInternalServerError)
 		return
 	}
-	conn, buf, err := hijacker.Hijack()
+	conBuilder.Conn, buf, err = hijacker.Hijack()
 	if err != nil {
 		log.Println("Hijack error:", err)
 		return
 	}
-	defer conn.Close()
+	defer conBuilder.Conn.Close()
 
 	//write http success response manually
 	buf.WriteString("HTTP/1.1 200 OK\r\n")
@@ -47,11 +51,11 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	//check the container already exists or not
 	exists := h.Helper.ContainerExists(conBuilder.Container.ContainerName)
 	if exists {
-		conn.Write([]byte("Container Already Exists"))
+		conBuilder.Conn.Write([]byte("Container Already Exists\n"))
 		return
 	}
 
-	conn.Write([]byte("creation started...\n"))
+	conBuilder.Conn.Write([]byte("creation started...\n"))
 
 	//to check the image locally
 	exists = h.Helper.CheckImageLocally(conBuilder.Container.Image)
