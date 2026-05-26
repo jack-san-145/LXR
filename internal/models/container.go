@@ -16,7 +16,7 @@ type Container struct {
 }
 
 // container creater with client connection and channel
-type ContainerCreater struct {
+type ContainerBuilder struct {
 	Container *Container
 	Conn      net.Conn
 	Quit      chan struct{}
