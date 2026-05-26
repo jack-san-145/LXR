@@ -81,3 +81,19 @@ func (h *Helper) FreezeContainer(containerName string) error {
 
 	return nil
 }
+
+// Unfreeze container
+func (h *Helper) UnfreezeContainer(containerName string) error {
+
+	base := "/sys/fs/cgroup/lxr/" + containerName
+
+	// 0 = unfreeze
+	err := os.WriteFile(base+"/cgroup.freeze", []byte("0"), 0644)
+
+	if err != nil {
+		log.Println("Unfreeze Error:", err)
+		return err
+	}
+
+	return nil
+}
