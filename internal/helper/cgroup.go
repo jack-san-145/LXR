@@ -20,15 +20,35 @@ func (h *Helper) CPU(percent int) string {
 	return fmt.Sprintf("%v 100000", quota)
 }
 
+// add nsenter's child to container's cgroup for resource control
+func (h *Helper) AddNsenterChildToCgroup(nsenterPID int, containerName string) error {
+
+	base := "/sys/fs/cgroup/lxr/" + containerName
+
+	childPID, err := h.GetChildPID(nsenterPID)
+	if err != nil {
+		log.Println("child PID Error: ", err)
+		return err
+	}
+	err = os.WriteFile(base+"/cgroup.procs", []byte(childPID), 0644) //attach nsenter child process with cgroup
+	if err != nil {
+		log.Println("cgroup attach Error: ", err)
+		return err
+	}
+	return nil
+
+}
+
 // to create new cgroup for container with limitations
 func (h *Helper) CreateCgroup(con *models.Container) error {
 
-	initPID, err := h.GetContainerInitPid(con.PID)
+	//get the container's init PID
+	initPID, err := h.GetChildPID(con.PID)
 	if err != nil {
 		return err
 	}
 
-	base := "/sys/fs/cgroup/lxr/" + con.ContainerName + con.ContainerId
+	base := "/sys/fs/cgroup/lxr/" + con.ContainerName
 
 	//creates an base directory
 	os.MkdirAll(base, 0755)

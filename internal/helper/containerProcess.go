@@ -17,13 +17,13 @@ func (h *Helper) GetContainerPid(name string) (string, bool) {
 	return "", false
 }
 
-// to get container init PID
-func (h *Helper) GetContainerInitPid(unsharePID int) (string, error) {
+// to get child PID from Parent PID
+func (h *Helper) GetChildPID(ParentPID int) (string, error) {
 
 	cmd := exec.Command(
 		"pgrep",
 		"-P",
-		strconv.Itoa(unsharePID),
+		strconv.Itoa(ParentPID),
 	)
 
 	out, err := cmd.Output()
@@ -31,6 +31,7 @@ func (h *Helper) GetContainerInitPid(unsharePID int) (string, error) {
 		return "", err
 	}
 
+	//returns only first child of parent
 	return strings.TrimSpace(string(out)), nil
 }
 
