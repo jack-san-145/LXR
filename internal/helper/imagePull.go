@@ -4,21 +4,16 @@ import (
 	"io"
 	"log"
 	"lxr-d/internal/models"
-	"os"
 	"os/exec"
 )
 
-func (h *Helper) PullImage(conCreater *models.ContainerCreater) error {
+func (h *Helper) PullImage(cb *models.ContainerBuilder) error {
 
-	image_env := "IMAGE=" + conCreater.Container.Image
+	image_env := "IMAGE=" + cb.Container.Image
 	cmd := exec.Command("../../script/pull-image.sh")
 	cmd.Env = append(cmd.Environ(),
 		image_env,
 	)
-
-	//redirects stdout out and err to terminal
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
 
 	// Get a pipe to read the command's standard output and error (stdout and stderr)
 	stdout, _ := cmd.StdoutPipe()
@@ -26,12 +21,12 @@ func (h *Helper) PullImage(conCreater *models.ContainerCreater) error {
 
 	// Stream stdoud(normal output) from the command to the client
 	go func() {
-		io.Copy(conCreater.Conn, stdout)
+		io.Copy(cb.Conn, stdout)
 	}()
 
 	// Stream stderr(error/warning output) from the command to the client
 	go func() {
-		io.Copy(conCreater.Conn, stderr)
+		io.Copy(cb.Conn, stderr)
 	}()
 
 	//start to run script at background
