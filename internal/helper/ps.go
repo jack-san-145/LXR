@@ -27,3 +27,30 @@ func (h *Helper) GetActiveContainers() []models.PsContainer {
 
 	return containers
 }
+
+// returns all containers
+func (h *Helper) GetAllContainers() []models.PsContainer {
+
+	var containers []models.PsContainer
+
+	for name, con := range h.ContainerManager.AllContainers {
+
+		status := "stopped"
+
+		if _, ok := h.ContainerManager.ActiveContainers[name]; ok {
+			status = "running"
+		}
+
+		containers = append(containers, models.PsContainer{
+			ContainerID:   con.ContainerId,
+			ContainerName: con.ContainerName,
+			Image:         con.Image,
+			PID:           con.PID,
+			Status:        status,
+			IPAddress:     con.IpAddress,
+			Port:          con.Port,
+		})
+	}
+
+	return containers
+}
