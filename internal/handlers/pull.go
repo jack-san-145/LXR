@@ -1,10 +1,10 @@
 package handlers
 
 import (
+	"bufio"
 	"encoding/json"
 	"log"
 	"lxr-d/internal/models"
-	"lxr-d/internal/response"
 	"net/http"
 )
 
@@ -14,8 +14,12 @@ func (h *Handler) PullImageHandler(w http.ResponseWriter, r *http.Request) {
 		ImageName string `json:"img_name"`
 	}
 
-	var image img
-	var builder models.ContainerBuilder
+	var (
+		image   img
+		builder models.ContainerBuilder
+		buf     *bufio.ReadWriter
+	)
+
 	err := json.NewDecoder(r.Body).Decode(&image)
 	if err != nil {
 		log.Println("Image Pull Error: ", err)
@@ -29,12 +33,12 @@ func (h *Handler) PullImageHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Hijack not supported", http.StatusInternalServerError)
 		return
 	}
-	conn, buf, err := hijacker.Hijack()
+	builder.Conn, buf, err = hijacker.Hijack()
 	if err != nil {
 		log.Println("Hijack error:", err)
 		return
 	}
-	defer conn.Close()
+	defer builder.Conn.Close()
 
 	//write http success response manually
 	buf.WriteString("HTTP/1.1 200 OK\r\n")
@@ -51,7 +55,7 @@ func (h *Handler) PullImageHandler(w http.ResponseWriter, r *http.Request) {
 
 	exists := h.Helper.CheckImageLocally(builder.Container.Image)
 	if exists {
-		builder.Conn.Write([]byte("Image already exists locally\n"))
+		builder.Conn.Write([]byte("Image already exists locally..\n"))
 		builder.Quit <- struct{}{}
 		return
 	}
@@ -59,12 +63,11 @@ func (h *Handler) PullImageHandler(w http.ResponseWriter, r *http.Request) {
 	err = h.Helper.PullImage(&builder)
 
 	if err != nil {
-		response.WriteJson(w, map[string]string{"status": "Error in Image Pull"})
 		builder.Conn.Write([]byte("Error in Image Pull\n"))
 		builder.Quit <- struct{}{}
 		return
 	}
-	builder.Conn.Write([]byte("Image Pulled Successfullyn"))
+	builder.Conn.Write([]byte("Image Pulled Successfully..\n"))
 	builder.Quit <- struct{}{}
 
 }
