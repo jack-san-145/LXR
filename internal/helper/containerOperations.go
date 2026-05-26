@@ -56,8 +56,8 @@ func (h *Helper) KillContainer(con *models.Container) error {
 	}
 
 	//remove killed container from containerManager
-	h.SetContainerDeactive(con)
-	h.RemoveContainer(con)
+	h.SetContainerDeactive(con.ContainerName)
+	h.RemoveContainer(con.ContainerName)
 
 	//put back the container's ip address to IPPool
 	h.NetworkConfig.ReturnIPToPool(con.IpAddress)
