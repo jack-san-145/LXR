@@ -20,6 +20,23 @@ func (h *Helper) CPU(percent int) string {
 	return fmt.Sprintf("%v 100000", quota)
 }
 
+// Check whether container cgroup exists
+func (h *Helper) CgroupExists(containerName string) bool {
+
+	base := "/sys/fs/cgroup/lxr/" + containerName
+
+	info, err := os.Stat(base)
+	if err != nil {
+		return false
+	}
+
+	if info.IsDir() {
+		return true
+	}
+
+	return false
+}
+
 // to create new cgroup for container with limitations
 func (h *Helper) CreateCgroup(con *models.Container) error {
 
