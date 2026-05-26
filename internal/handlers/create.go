@@ -115,4 +115,8 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	conBuilder.Conn.Write([]byte("\nContainer Created Successfully...\n"))
 	conBuilder.Quit <- struct{}{}
+
+	//add containers to Allcontainers in containerManager
+	h.Helper.SetContainerDeactive(conBuilder.Container)
+	h.Helper.AddContainer(conBuilder.Container)
 }
