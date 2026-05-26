@@ -57,3 +57,13 @@ func (h *Helper) AddContainer(con *models.Container) {
 func (h *Helper) SetContainerActive(con *models.Container) {
 	h.ContainerManager.ActiveContainers[con.ContainerName] = &con.PID
 }
+
+// remove container from ActiveContainers
+func (h *Helper) SetContainerDeactive(con *models.Container) {
+	delete(h.ContainerManager.ActiveContainers, con.ContainerName)
+}
+
+// remove container to AllContainers
+func (h *Helper) RemoveContainer(con *models.Container) {
+	delete(h.ContainerManager.AllContainers, con.ContainerName)
+}
