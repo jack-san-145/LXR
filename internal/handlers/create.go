@@ -62,6 +62,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	if !exists {
 		err := h.Helper.PullImage(&conBuilder)
 		if err != nil {
+			conBuilder.Conn.Write([]byte("Image Pull Failed\n"))
 			conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
 		}
 	}
@@ -69,7 +70,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	//if not already exists creats new container environment (only setup containers rootfs)
 	err = h.Helper.RootfsSetup(&conBuilder)
 	if err != nil {
-		log.Println("Error during RootfsSetup: ", err)
+		conBuilder.Conn.Write([]byte("Rootfs setup failed..\n"))
 		conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
 		return
 	}
@@ -77,6 +78,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	//setup new container with rootfs
 	err = h.Helper.ContainerSetup(conBuilder.Container)
 	if err != nil {
+		conBuilder.Conn.Write([]byte("Container setup failed..\n"))
 		conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
 		return
 	}
@@ -87,6 +89,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	//setup networking for container
 	err = h.Helper.SetupContainerNetworking(&conBuilder)
 	if err != nil {
+		conBuilder.Conn.Write([]byte("Container networking failed..\n"))
 		conBuilder.Quit <- struct{}{}
 		return
 	}
@@ -94,6 +97,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	//create cgroups(memory,cpu,process)limits for new container
 	err = h.Helper.CreateCgroup(conBuilder.Container)
 	if err != nil {
+		conBuilder.Conn.Write([]byte("Container cgroups creation failed..\n"))
 		conBuilder.Quit <- struct{}{}
 		return
 	}
