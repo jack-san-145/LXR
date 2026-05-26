@@ -28,3 +28,19 @@ func (h *Helper) CheckImageLocally(image string) bool {
 	}
 	return false
 }
+
+// to remove local images in LXR-registry"
+func (h *Helper) RemoveImage(image string) error {
+	path := "/home/LXR/LXR-registry/" + image
+	log.Println("image: ", image)
+	info, _ := os.Stat(path)
+	log.Println("path: ", path)
+
+	if info.IsDir() {
+		err := os.RemoveAll(path)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
