@@ -31,6 +31,7 @@ func (h *Handler) ExecHandler(w http.ResponseWriter, r *http.Request) {
 	//run cmd in pseudo terminal for given container
 	cmd := exec.Command(
 		"nsenter",
+		"-r",
 		"--target", pid,
 		"--pid", "--mount", "--uts", "--net",
 		"bash",
@@ -41,6 +42,10 @@ func (h *Handler) ExecHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Pty Error: ", err)
 		return
 	}
+
+	nsenterPID := cmd.Process.Pid
+
+	h.Helper.AddNsenterChildToCgroup(nsenterPID, con_name) //add new nsenter's child process to container's cgroup
 
 	defer func() {
 		ptmx.Close()
