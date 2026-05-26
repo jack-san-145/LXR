@@ -60,7 +60,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	conBuilder.Conn.Write([]byte("creation started...\n"))
 
 	//to check the image locally
-	conBuilder.Conn.Write([]byte("[+]Find Image locally in LXR-registry...\n\n"))
+	conBuilder.Conn.Write([]byte("[+]Find Image locally in LXR-registry...\n"))
 	exists = h.Helper.CheckImageLocally(conBuilder.Container.Image)
 	if !exists {
 		err := h.Helper.PullImage(&conBuilder)
@@ -71,7 +71,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//if not already exists creats new container environment (only setup containers rootfs)
-	conBuilder.Conn.Write([]byte("\n[+]Setting up container rootfs...\n"))
+	conBuilder.Conn.Write([]byte("[+]Setting up container rootfs...\n"))
 	err = h.Helper.RootfsSetup(&conBuilder)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Rootfs setup failed..\n"))
@@ -81,7 +81,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//setup new container with rootfs
-	conBuilder.Conn.Write([]byte("\n[+]Building container environment with rootfs..\n"))
+	conBuilder.Conn.Write([]byte("[+]Building container environment with rootfs..\n"))
 	err = h.Helper.ContainerSetup(conBuilder.Container)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container setup failed..\n"))
@@ -104,6 +104,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//create cgroups(memory,cpu,process)limits for new container
+	conBuilder.Conn.Write([]byte("\n[+]Setting up container resources limit...\n"))
 	err = h.Helper.CreateCgroup(conBuilder.Container)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container cgroups creation failed..\n"))
