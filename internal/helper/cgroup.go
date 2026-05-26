@@ -20,25 +20,6 @@ func (h *Helper) CPU(percent int) string {
 	return fmt.Sprintf("%v 100000", quota)
 }
 
-// add nsenter's child to container's cgroup for resource control
-func (h *Helper) AddNsenterChildToCgroup(nsenterPID int, containerName string) error {
-
-	base := "/sys/fs/cgroup/lxr/" + containerName
-
-	childPID, err := h.GetChildPID(nsenterPID)
-	if err != nil {
-		log.Println("child PID Error: ", err)
-		return err
-	}
-	err = os.WriteFile(base+"/cgroup.procs", []byte(childPID), 0644) //attach nsenter child process with cgroup
-	if err != nil {
-		log.Println("cgroup attach Error: ", err)
-		return err
-	}
-	return nil
-
-}
-
 // to create new cgroup for container with limitations
 func (h *Helper) CreateCgroup(con *models.Container) error {
 
@@ -64,4 +45,39 @@ func (h *Helper) CreateCgroup(con *models.Container) error {
 	}
 	return err
 
+}
+
+// add nsenter's child to container's cgroup for resource control
+func (h *Helper) AddNsenterChildToCgroup(nsenterPID int, containerName string) error {
+
+	base := "/sys/fs/cgroup/lxr/" + containerName
+
+	childPID, err := h.GetChildPID(nsenterPID)
+	if err != nil {
+		log.Println("child PID Error: ", err)
+		return err
+	}
+	err = os.WriteFile(base+"/cgroup.procs", []byte(childPID), 0644) //attach nsenter child process with cgroup
+	if err != nil {
+		log.Println("cgroup attach Error: ", err)
+		return err
+	}
+	return nil
+
+}
+
+// Freeze container by put 1 to cgroup.freeze
+func (h *Helper) FreezeContainer(containerName string) error {
+
+	base := "/sys/fs/cgroup/lxr/" + containerName
+
+	// 1 = freeze
+	err := os.WriteFile(base+"/cgroup.freeze", []byte("1"), 0644)
+
+	if err != nil {
+		log.Println("Freeze Error:", err)
+		return err
+	}
+
+	return nil
 }
