@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 )
 
 // to find equivalent bytes for given mb
@@ -21,19 +22,20 @@ func (h *Helper) CPU(percent int) string {
 }
 
 // to get container init PID
-func (h *Helper) GetContainerInitPid(conPID int) (string, error) {
+func (h *Helper) GetContainerInitPid(unsharePID int) (string, error) {
 
-	//extract container's init pid with parent pid
-	CMD := fmt.Sprintf("ps -ef | grep %v | head -n 2 | tail -n 1 | awx '{print $2}' ", conPID)
+	cmd := exec.Command(
+		"pgrep",
+		"-P",
+		strconv.Itoa(unsharePID),
+	)
 
-	cmd := exec.Command("bash", "-c", CMD)
 	out, err := cmd.Output()
 	if err != nil {
-		log.Println("Error while get container init: ", err)
 		return "", err
 	}
-	initPID := string(out)
-	return initPID, nil
+
+	return strings.TrimSpace(string(out)), nil
 }
 
 // to create new cgroup for container with limitations
@@ -55,6 +57,9 @@ func (h *Helper) CreateCgroup(con *models.Container) error {
 	err = os.WriteFile(base+"/cpu.max", []byte(h.CPU(50)), 0644)    //use 50% of cpu
 	err = os.WriteFile(base+"/pids.max", []byte("100"), 0644)       //can spawn upto 100 processes
 
+	if err != nil {
+		log.Println("cgroup err: ", err)
+	}
 	return err
 
 }

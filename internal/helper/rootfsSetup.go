@@ -1,23 +1,24 @@
 package helper
 
 import (
-	"github.com/google/uuid"
 	"io"
 	"log"
 	"lxr-d/internal/models"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
-func (h *Helper) RootfsSetup(conCreater *models.ContainerCreater) error {
+func (h *Helper) RootfsSetup(cb *models.ContainerBuilder) error {
 
 	id := uuid.New()
-	conCreater.Container.ContainerId = strings.Join(strings.Split(id.String(), "-"), "")
+	cb.Container.ContainerId = strings.Join(strings.Split(id.String(), "-"), "")
 
-	container_name_env := "CONTAINER_NAME=" + conCreater.Container.ContainerName
-	image_name_env := "IMAGE_NAME=" + conCreater.Container.Image
-	container_id_env := "CONTAINER_ID=" + conCreater.Container.ContainerId
+	container_name_env := "CONTAINER_NAME=" + cb.Container.ContainerName
+	image_name_env := "IMAGE_NAME=" + cb.Container.Image
+	container_id_env := "CONTAINER_ID=" + cb.Container.ContainerId
 
 	//run the script with env
 	cmd := exec.Command("../../script/rootfs-setup.sh")
@@ -26,21 +27,18 @@ func (h *Helper) RootfsSetup(conCreater *models.ContainerCreater) error {
 		container_id_env,
 		image_name_env)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
 	// Get a pipe to read the command's standard output and error (stdout and stderr)
 	stdout, _ := cmd.StdoutPipe()
 	stderr, _ := cmd.StderrPipe()
 
 	// Stream stdoud(normal output) from the command to the client
 	go func() {
-		io.Copy(conCreater.Conn, stdout)
+		io.Copy(cb.Conn, stdout)
 	}()
 
 	// Stream stderr(error/warning output) from the command to the client
 	go func() {
-		io.Copy(conCreater.Conn, stderr)
+		io.Copy(cb.Conn, stderr)
 	}()
 
 	//start to run script at background

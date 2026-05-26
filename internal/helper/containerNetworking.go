@@ -40,9 +40,6 @@ func (h *Helper) SetupContainerNetworking(cb *models.ContainerBuilder) error {
 		bridge_veth_env,
 	)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
 	// Get a pipe to read the command's standard output and error (stdout and stderr)
 	stdout, _ := cmd.StdoutPipe()
 	stderr, _ := cmd.StderrPipe()

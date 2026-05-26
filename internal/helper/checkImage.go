@@ -6,6 +6,7 @@ import (
 )
 
 func (h *Helper) CheckImageLocally(image string) bool {
+
 	path := "/home/LXR/LXR-registry/" + image
 	log.Println("image: ", image)
 	info, err := os.Stat(path)
