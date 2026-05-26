@@ -61,5 +61,13 @@ func (h *Helper) KillContainer(con *models.Container) error {
 
 	//put back the container's ip address to IPPool
 	h.NetworkConfig.ReturnIPToPool(con.IpAddress)
+
+	//kill container cgroup if exists
+	exists := h.CgroupExists(con.ContainerName)
+	if exists {
+		err := h.KillContainerCgroup(con.ContainerName)
+		return err
+
+	}
 	return nil
 }
