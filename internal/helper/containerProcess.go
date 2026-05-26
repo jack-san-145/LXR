@@ -43,7 +43,7 @@ func (h *Helper) ContainerExists(name string) bool {
 }
 
 // check container currently active or not
-func (h *Helper) ContainerActive(name string) bool {
+func (h *Helper) IsContainerActive(name string) bool {
 	_, ok := h.ContainerManager.ActiveContainers[name]
 	return ok
 }
@@ -54,16 +54,18 @@ func (h *Helper) AddContainer(con *models.Container) {
 }
 
 // add container to ActiveContainers
-func (h *Helper) SetContainerActive(con *models.Container) {
-	h.ContainerManager.ActiveContainers[con.ContainerName] = &con.PID
+func (h *Helper) SetContainerActive(containerName string) {
+
+	PID := h.ContainerManager.AllContainers[containerName].PID
+	h.ContainerManager.ActiveContainers[containerName] = &PID
 }
 
 // remove container from ActiveContainers
-func (h *Helper) SetContainerDeactive(con *models.Container) {
-	delete(h.ContainerManager.ActiveContainers, con.ContainerName)
+func (h *Helper) SetContainerDeactive(containerName string) {
+	delete(h.ContainerManager.ActiveContainers, containerName)
 }
 
 // remove container to AllContainers
-func (h *Helper) RemoveContainer(con *models.Container) {
-	delete(h.ContainerManager.AllContainers, con.ContainerName)
+func (h *Helper) RemoveContainer(containerName string) {
+	delete(h.ContainerManager.AllContainers, containerName)
 }
