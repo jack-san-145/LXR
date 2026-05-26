@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+echo "[+]Initialize Image Pull..."
 
 #create a registry to store the actual image rootfs of LXR
 mkdir -p /home/LXR/LXR-registry/$IMAGE/rootfs
@@ -52,7 +52,7 @@ TOKEN=$(curl -s \
 | jq -r .token)
 
 
-
+echo "[+]Pulling image layers..."
 #for loop to iterate the digest list
 COUNT=1
 for DIGEST in $LAYERS;do
@@ -68,6 +68,8 @@ for DIGEST in $LAYERS;do
     tar -xf $LAYER_NAME -C $LXR_IMAGE_REG/rootfs
 
     rm $LAYER_NAME
+
+    echo "[+]layer $COUNT pulled ✓"
    (( COUNT++))
 done
 
@@ -75,3 +77,4 @@ done
 #remove the manifest file 
 rm $LXR_IMAGE_REG/manifest.json
 
+echo "[+]Image pulled successfully..."
