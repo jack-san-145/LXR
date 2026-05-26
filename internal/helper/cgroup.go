@@ -5,9 +5,8 @@ import (
 	"log"
 	"lxr-d/internal/models"
 	"os"
-	"os/exec"
+
 	"strconv"
-	"strings"
 )
 
 // to find equivalent bytes for given mb
@@ -19,23 +18,6 @@ func (h *Helper) MB(m int) string {
 func (h *Helper) CPU(percent int) string {
 	quota := percent * 1000
 	return fmt.Sprintf("%v 100000", quota)
-}
-
-// to get container init PID
-func (h *Helper) GetContainerInitPid(unsharePID int) (string, error) {
-
-	cmd := exec.Command(
-		"pgrep",
-		"-P",
-		strconv.Itoa(unsharePID),
-	)
-
-	out, err := cmd.Output()
-	if err != nil {
-		return "", err
-	}
-
-	return strings.TrimSpace(string(out)), nil
 }
 
 // to create new cgroup for container with limitations
