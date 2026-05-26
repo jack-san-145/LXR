@@ -97,3 +97,19 @@ func (h *Helper) UnfreezeContainer(containerName string) error {
 
 	return nil
 }
+
+// Kill all processes inside container cgroup
+func (h *Helper) KillContainerCgroup(containerName string) error {
+
+	base := "/sys/fs/cgroup/lxr/" + containerName
+
+	// 1 = kill all processes in cgroup
+	err := os.WriteFile(base+"/cgroup.kill", []byte("1"), 0644)
+
+	if err != nil {
+		log.Println("Kill Container cgroup Error:", err)
+		return err
+	}
+
+	return nil
+}
