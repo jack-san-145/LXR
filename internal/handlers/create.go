@@ -71,7 +71,8 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	err = h.Helper.RootfsSetup(&conBuilder)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Rootfs setup failed..\n"))
-		conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
+		conBuilder.Quit <- struct{}{}                   //pass quit signal to terminal container creation process
+		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
 		return
 	}
 
@@ -79,7 +80,8 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	err = h.Helper.ContainerSetup(conBuilder.Container)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container setup failed..\n"))
-		conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
+		conBuilder.Quit <- struct{}{}                   //pass quit signal to terminal container creation process
+		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
 		return
 	}
 	h.Helper.SetContainerActive(conBuilder.Container) //set new container to active state
@@ -91,6 +93,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container networking failed..\n"))
 		conBuilder.Quit <- struct{}{}
+		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
 		return
 	}
 
@@ -99,7 +102,9 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container cgroups creation failed..\n"))
 		conBuilder.Quit <- struct{}{}
+		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
 		return
 	}
 
+	conBuilder.Quit <- struct{}{}
 }
