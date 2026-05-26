@@ -89,6 +89,10 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
 		return
 	}
+
+	//add containers to Allcontainers in containerManager
+	h.Helper.AddContainer(conBuilder.Container)
+
 	h.Helper.SetContainerActive(conBuilder.Container.ContainerName) //set new container to active state
 
 	time.Sleep(time.Second * 3) //wait 3sec to complete container setup
@@ -116,6 +120,5 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	conBuilder.Conn.Write([]byte("\nContainer Created Successfully...\n"))
 	conBuilder.Quit <- struct{}{}
 
-	//add containers to Allcontainers in containerManager
-	h.Helper.AddContainer(conBuilder.Container)
+	h.Helper.FreezeContainer(conBuilder.Container.ContainerName)
 }
