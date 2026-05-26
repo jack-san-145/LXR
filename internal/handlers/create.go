@@ -16,6 +16,9 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		conBuilder models.ContainerBuilder
 		buf        *bufio.ReadWriter
 	)
+
+	conBuilder.Quit = make(chan struct{}) //intialize quit channel
+
 	err := json.NewDecoder(r.Body).Decode(&conBuilder.Container)
 	if err != nil {
 		log.Println("Creation Error: ", err)
@@ -33,7 +36,6 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Hijack error:", err)
 		return
 	}
-	defer conBuilder.Conn.Close()
 
 	//write http success response manually
 	buf.WriteString("HTTP/1.1 200 OK\r\n")
@@ -106,5 +108,6 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	conBuilder.Conn.Write([]byte("Container Created Successfully...\n"))
 	conBuilder.Quit <- struct{}{}
 }
