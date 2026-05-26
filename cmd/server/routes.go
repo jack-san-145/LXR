@@ -18,5 +18,9 @@ func NewRouter(h *handlers.Handler) *chi.Mux {
 	r.Get("/exec", h.ExecHandler)
 	r.Delete("/kill", h.KillHanlder)
 	r.Post("/pull_image", h.PullImageHandler)
+
+	r.Get("/ps", h.PsHandler)
+	r.Get("/ps/all", h.PsAllHandler)
+
 	return r
 }
