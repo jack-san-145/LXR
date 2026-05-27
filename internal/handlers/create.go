@@ -3,6 +3,7 @@ package handlers
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"log"
 	"lxr-d/internal/models"
 	"net/http"
@@ -54,13 +55,14 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	exists := h.Helper.ContainerExists(conBuilder.Container.ContainerName)
 	if exists {
 		conBuilder.Conn.Write([]byte("Container Already Exists\n"))
+		conBuilder.Quit <- struct{}{}
 		return
 	}
 
 	conBuilder.Conn.Write([]byte("creation started...\n"))
 
 	//to check the image locally
-	conBuilder.Conn.Write([]byte("[+]Find Image locally in LXR-registry...\n"))
+	conBuilder.Conn.Write([]byte("[+] Find Image locally in LXR-registry...\n"))
 	exists = h.Helper.CheckImageLocally(conBuilder.Container.Image)
 	if !exists {
 		err := h.Helper.PullImage(&conBuilder)
@@ -71,7 +73,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//if not already exists creats new container environment (only setup containers rootfs)
-	conBuilder.Conn.Write([]byte("[+]Setting up container rootfs...\n"))
+	conBuilder.Conn.Write([]byte("[+] Setting up container rootfs...\n"))
 	err = h.Helper.RootfsSetup(&conBuilder)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Rootfs setup failed..\n"))
@@ -81,7 +83,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//setup new container with rootfs
-	conBuilder.Conn.Write([]byte("[+]Building container environment with rootfs..\n"))
+	conBuilder.Conn.Write([]byte("[+] Building container environment with rootfs..\n"))
 	err = h.Helper.ContainerSetup(conBuilder.Container)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container setup failed..\n"))
@@ -98,7 +100,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	time.Sleep(time.Second * 3) //wait 3sec to complete container setup
 
 	//setup networking for container
-	conBuilder.Conn.Write([]byte("\n[+]Setting up container networking..\n"))
+	conBuilder.Conn.Write([]byte("[+] Setting up container networking..\n"))
 	err = h.Helper.SetupContainerNetworking(&conBuilder)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container networking failed..\n"))
@@ -108,7 +110,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//create cgroups(memory,cpu,process)limits for new container
-	conBuilder.Conn.Write([]byte("\n[+]Setting up container resources limit...\n"))
+	conBuilder.Conn.Write([]byte("[+] Setting up container resources limit...\n"))
 	err = h.Helper.CreateCgroup(conBuilder.Container)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container cgroups creation failed..\n"))
@@ -117,8 +119,21 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//install dependency modules inside new container
+	err = h.Helper.InstallDependencies(&conBuilder)
+	if err != nil {
+		conBuilder.Conn.Write([]byte("Container dependency installation failed..\n"))
+		conBuilder.Quit <- struct{}{}
+		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
+		return
+	}
+
+	//freeze container immediately after container creation
+	h.Helper.FreezeContainer(conBuilder.Container.ContainerName)
+
+	containerDetails := fmt.Sprintf("\nCONTAINER ID: %v              CONTAINER NAME: %v", conBuilder.Container.ContainerId, conBuilder.Container.ContainerName)
+	conBuilder.Conn.Write([]byte(containerDetails + "\n"))
+
 	conBuilder.Conn.Write([]byte("\nContainer Created Successfully...\n"))
 	conBuilder.Quit <- struct{}{}
-
-	h.Helper.FreezeContainer(conBuilder.Container.ContainerName)
 }

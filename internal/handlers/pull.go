@@ -57,6 +57,7 @@ func (h *Handler) PullImageHandler(w http.ResponseWriter, r *http.Request) {
 
 	}()
 
+	builder.Conn.Write([]byte("[+]Find Image locally in LXR-registry..\n"))
 	exists := h.Helper.CheckImageLocally(builder.Container.Image)
 	if exists {
 		builder.Conn.Write([]byte("Image already exists locally..\n"))
@@ -73,7 +74,6 @@ func (h *Handler) PullImageHandler(w http.ResponseWriter, r *http.Request) {
 		h.Helper.RemoveImage(builder.Container.ContainerName) //remove image when error occured
 		return
 	}
-	// builder.Conn.Write([]byte("Image Pulled Successfully..\n"))
 	builder.Quit <- struct{}{}
 
 }
