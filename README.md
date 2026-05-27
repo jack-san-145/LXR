@@ -277,7 +277,14 @@ Container creation workflow:
 * installs container dependencies
 * starts isolated environment
 
-![Container Create](./assets/container-create.png)
+![Create Container](./assets/create.png)
+---
+
+## Start Container
+
+```bash
+lxr start py-con
+```
 
 ---
 
@@ -292,8 +299,10 @@ lxr ps
 ## List All Containers
 
 ```bash
-lxr ps --all
+lxr ps -a
 ```
+
+![Create Container](./assets/ps.png)
 
 ---
 
@@ -305,6 +314,8 @@ lxr exec py-con
 
 This attaches an interactive PTY shell into the container namespaces.
 
+![Create Container](./assets/exec.png)
+
 ---
 
 ## Stop Container
@@ -314,14 +325,6 @@ lxr stop py-con
 ```
 
 Container processes are frozen using cgroups.
-
----
-
-## Start Container
-
-```bash
-lxr start py-con
-```
 
 ---
 
@@ -341,6 +344,8 @@ This removes:
 
 Released container IPs are returned back to the reusable IP pool.
 
+![Create Container](./assets/kill.png)
+
 ---
 
 # Container Environment
@@ -354,6 +359,8 @@ Each container automatically includes:
 * `code-server`
 
 Containers expose browser-accessible development environments through integrated `code-server` support.
+
+![Create Container](./assets/code_server.png)
 
 ---
 
