@@ -1,6 +1,9 @@
 package models
 
-import "net"
+import (
+	"net"
+	"sync"
+)
 
 type Container struct {
 	PID           int    `json:"pid"`
@@ -25,6 +28,7 @@ type ContainerBuilder struct {
 type ContainerManager struct {
 	AllContainers    map[string]*Container
 	ActiveContainers map[string]*int
+	Mu               sync.RWMutex
 }
 
 func NewContainerManager() *ContainerManager {
