@@ -360,6 +360,7 @@ Each container automatically includes:
 
 Containers expose browser-accessible development environments through integrated `code-server` support.
 
+
 ![Create Container](./assets/code_server.png)
 
 ---
