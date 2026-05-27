@@ -1,13 +1,19 @@
 #!/bin/bash
 
 #make the output tracable
-#set -ex
+# set -ex
 
 #create seperate directory for each container with its containerName+containerID
 mkdir -p /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID
 
+echo "  [+] extract image rootfs ✔"
 #copy image rootfs Recursively to container data
 cp -r /home/LXR/LXR-registry/$IMAGE_NAME /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/
+
+
+echo "  [+] add dependency script ✔"
+mkdir -p /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME/rootfs/home/script
+cp /home/jack/LXR/LXR-d/script/install-dependencies.sh /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME/rootfs/home/script
 
 #enter into it
 cd /home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID/$IMAGE_NAME
@@ -18,5 +24,6 @@ chown jack:lxr -R rootfs
 #give permissions for /dev to create null further
 chmod 775 rootfs/dev
 
+echo "  [+] Rootfs setup completed ✔"
 
 
