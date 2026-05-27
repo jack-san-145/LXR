@@ -23,7 +23,7 @@ func (h *Helper) StopContainer(name string) (bool, error) {
 
 	err = ps.Kill()
 	if err == nil {
-		delete(h.ContainerManager.ActiveContainers, name)
+		h.RemoveContainer(name)
 	}
 	return exists, err
 }
