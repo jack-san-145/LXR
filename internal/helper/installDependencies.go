@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"io"
 	"log"
 	"lxr-d/internal/models"
 	"os"
@@ -8,16 +9,17 @@ import (
 	"strconv"
 )
 
-func (h *Helper) InstallDependencies(con *models.Container) {
+func (h *Helper) InstallDependencies(cb *models.ContainerBuilder) error {
 
-	pass_env := "PASSWORD=" + con.ContainerName
+	pass_env := "PASSWORD=" + cb.Container.ContainerName
 
+	//executes install-dependencies.sh inside from container rootfs
 	cmd := exec.Command(
 		"nsenter",
 		"-r",
-		"--target", strconv.Itoa(con.PID),
+		"--target", strconv.Itoa(cb.Container.PID),
 		"--pid", "--mount", "--uts", "--net",
-		"bash", "../../script/install-dependencies.sh",
+		"bash", "/home/script/install-dependencies.sh",
 	)
 
 	//inject env to the script
@@ -25,13 +27,34 @@ func (h *Helper) InstallDependencies(con *models.Container) {
 		pass_env,
 	)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	// Get a pipe to read the command's standard output and error (stdout and stderr)
+	stdout, _ := cmd.StdoutPipe()
+	stderr, _ := cmd.StderrPipe()
 
-	//run script in background
+	// Stream stdoud(normal output) from the command to the client
+	go func() {
+		io.Copy(cb.Conn, stdout)
+	}()
+
+	// Stream stderr(error/warning output) from the command to the client
+	go func() {
+		io.Copy(cb.Conn, stderr)
+	}()
+
+	//start to run script at background
 	err := cmd.Start()
 	if err != nil {
 		log.Println("Error container dependencies: ", err)
+		return err
 	}
+
+	//wait until script to complete
+	err = cmd.Wait()
+	if err != nil {
+		log.Println("Install dependency error: ", err)
+		return err
+	}
+
+	return nil
 
 }

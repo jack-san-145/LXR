@@ -14,7 +14,7 @@ import (
 func (h *Helper) RootfsSetup(cb *models.ContainerBuilder) error {
 
 	id := uuid.New()
-	cb.Container.ContainerId = strings.Join(strings.Split(id.String(), "-"), "")
+	cb.Container.ContainerId = strings.Join(strings.Split(id.String(), "-"), "")[:12]
 
 	container_name_env := "CONTAINER_NAME=" + cb.Container.ContainerName
 	image_name_env := "IMAGE_NAME=" + cb.Container.Image
