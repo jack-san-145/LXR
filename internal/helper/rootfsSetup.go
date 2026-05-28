@@ -18,13 +18,11 @@ func (h *Helper) RootfsSetup(cb *models.ContainerBuilder) error {
 
 	container_name_env := "CONTAINER_NAME=" + cb.Container.ContainerName
 	image_name_env := "IMAGE_NAME=" + cb.Container.Image
-	container_id_env := "CONTAINER_ID=" + cb.Container.ContainerId
 
 	//run the script with env
 	cmd := exec.Command("../../script/rootfs-setup.sh")
 	cmd.Env = append(os.Environ(),
 		container_name_env,
-		container_id_env,
 		image_name_env)
 
 	// Get a pipe to read the command's standard output and error (stdout and stderr)

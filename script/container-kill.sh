@@ -3,7 +3,7 @@
 set -ex
 
 #container data directory
-con_dir="/home/LXR/LXR-data/$CONTAINER_NAME-$CONTAINER_ID"
+con_dir="/home/LXR/LXR-data/$CONTAINER_NAME"
 
 #remove bridge veth and another veth automatically removed
 ip link delete $BRIDGE_VETH

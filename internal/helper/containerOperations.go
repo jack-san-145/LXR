@@ -31,7 +31,6 @@ func (h *Helper) StopContainer(name string) (bool, error) {
 func (h *Helper) KillContainer(con *models.Container) error {
 
 	container_name_env := "CONTAINER_NAME=" + con.ContainerName
-	container_id_env := "CONTAINER_ID=" + con.ContainerId
 	container_pid_env := "CONTAINER_PID=" + strconv.Itoa(con.PID)
 	bridge_veth_env := "BRIDGE_VETH=" + con.BrVeth
 
@@ -40,7 +39,6 @@ func (h *Helper) KillContainer(con *models.Container) error {
 	//inject env to the script
 	cmd.Env = append(os.Environ(),
 		container_name_env,
-		container_id_env,
 		bridge_veth_env,
 		container_pid_env,
 	)
