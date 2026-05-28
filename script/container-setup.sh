@@ -2,8 +2,8 @@
 
 set -ex
 
-#directory to store the container's data
-ROOT_FS=/home/LXR/LXR-data/$CONTAINER_NAME/$IMAGE/rootfs
+#use containers merged directory as combined rootfs
+ROOT_FS=/home/LXR/LXR-data/$CONTAINER_NAME/$IMAGE_NAME/merged
 
 #after this mount wont affects the host 
 mount --make-rprivate /
