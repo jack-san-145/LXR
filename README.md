@@ -2,7 +2,7 @@
 
 LXR is a Linux container runtime and browser-accessible development environment built from scratch using low-level Linux primitives such as namespaces, cgroups, veth networking, PTY execution, and isolated root filesystems.
 
-LXR manually implements core container runtime components including image pulling, rootfs extraction, process isolation, container networking, resource control, and interactive terminal execution.
+LXR manually implements core container runtime components including image pulling, rootfs extraction, OverlayFS layered filesystems, process isolation, container networking, resource control, and interactive terminal execution.
 
 Each container includes integrated `code-server` support, enabling isolated browser-based development environments directly inside containers.
 
@@ -20,6 +20,7 @@ LXR directly orchestrates namespaces, cgroups, networking, PTY systems, and file
 * Browser-accessible `code-server` containers
 * Pull container images directly from Docker Hub
 * Extract and manage isolated rootfs environments
+* OverlayFS based layered container filesystem
 * Unix socket based daemon communication
 * Persistent container metadata
 * CLI driven workflow
@@ -112,6 +113,20 @@ Each container receives:
 * default gateway
 
 Released container IPs are automatically returned back to the reusable IP pool when containers are destroyed.
+
+---
+
+## Filesystem Layer
+
+LXR uses OverlayFS to create layered container filesystems.
+
+Each container gets:
+
+* lower layer from extracted image rootfs
+* upper writable layer for container changes
+* merged mount used as container root filesystem
+
+This allows containers to run with isolated writable environments without modifying the original image rootfs.
 
 ---
 
@@ -337,6 +352,8 @@ lxr kill py-con
 This removes:
 
 * rootfs
+* overlay mounts
+* writable upper layers
 * veth pair
 * namespaces
 * cgroups
