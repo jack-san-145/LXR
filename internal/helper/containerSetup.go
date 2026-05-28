@@ -11,7 +11,7 @@ import (
 func (h *Helper) ContainerSetup(container *models.Container) error {
 
 	container_name_env := "CONTAINER_NAME=" + container.ContainerName
-	img_name_env := "IMAGE=" + container.Image
+	img_name_env := "IMAGE_NAME=" + container.Image
 
 	cmd := exec.Command(
 		"unshare",
