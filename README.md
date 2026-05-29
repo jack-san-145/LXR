@@ -421,3 +421,7 @@ LXR-data/
 Stores per-container isolated filesystems.
 
 ---
+
+## License
+
+This project is licensed under the MIT License.
