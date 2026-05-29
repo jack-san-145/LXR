@@ -1,7 +1,7 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive  
 
-echo "[+] Installing dependencies..."
+echo -e "\n[+] Installing dependencies..."
 
 #mount temporary fs
 mount -t tmpfs tmpfs /tmp 
