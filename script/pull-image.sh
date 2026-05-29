@@ -3,9 +3,9 @@
 echo -e "[+] Initialize Image Pull...\n"
 
 #create a registry to store the actual image rootfs of LXR
-mkdir -p /home/LXR/LXR-registry/$IMAGE/rootfs
+mkdir -p /home/LXR/LXR-registry/$IMAGE_NAME/rootfs
 
-LXR_IMAGE_REG=/home/LXR/LXR-registry/$IMAGE
+LXR_IMAGE_REG=/home/LXR/LXR-registry/$IMAGE_NAME
 
 #create a manifest.json to store the json manifest list
 touch $LXR_IMAGE_REG/manifest.json
@@ -14,7 +14,7 @@ touch $LXR_IMAGE_REG/manifest.json
 # request an token for the specific repo to fetch oci images
 #-s ignores the progress bar and error msg ,just give the json token response and that passed as input to the jq(JSON parser) that parse that JSON response and return only the token field (-r means return raw data (without any quotes)
 TOKEN=$(curl -s \
-"https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/$IMAGE:pull" \
+"https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/$IMAGE_NAME:pull" \
 | jq -r .token)
 
 
@@ -48,11 +48,11 @@ https://registry-1.docker.io/v2/library/$IMAGE/manifests/$MANIFEST_DIGEST\
 
 #refresh token again to avoid expiry issue while fetching blob
 TOKEN=$(curl -s \
-"https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/$IMAGE:pull" \
+"https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/$IMAGE_NAME:pull" \
 | jq -r .token)
 
 
-echo -e "[+] Pulling image layers...\n"
+echo -e "   [+] Pulling image layers...\n"
 #for loop to iterate the digest list
 COUNT=1
 for DIGEST in $LAYERS;do
@@ -61,7 +61,7 @@ for DIGEST in $LAYERS;do
     #request blob for each digest in a list and store it as a layerx.tar.gz
     curl -L -s \
     -H "Authorization: Bearer $TOKEN" \
-    "https://registry-1.docker.io/v2/library/$IMAGE/blobs/$DIGEST" \
+    "https://registry-1.docker.io/v2/library/$IMAGE_NAME/blobs/$DIGEST" \
     -o "$LAYER_NAME"
 
     #untar the layer and store it to rootfs
@@ -69,7 +69,7 @@ for DIGEST in $LAYERS;do
 
     rm $LAYER_NAME
 
-    echo "  [+] layer $COUNT pulled ✔"
+    echo "      [+] layer $COUNT pulled ✔"
    (( COUNT++))
 done
 echo -e ""
@@ -77,4 +77,4 @@ echo -e ""
 #remove the manifest file 
 rm $LXR_IMAGE_REG/manifest.json
 
-echo "[+] Image pulled successfully..."
+echo "  [+] Image pulled successfully..."
