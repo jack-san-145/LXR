@@ -11,10 +11,13 @@ ip link delete $BRIDGE_VETH
 #kill container's parent process(unshare)
 kill -9 $CONTAINER_PID
 
-sleep 2
+# wait until fully dead
+while kill -0 $CONTAINER_PID 2>/dev/null; do
+  sleep 0.5
+done
 
-#umount container's overlay setup
-umount -l $con_dir/$IMAGE_NAME/merged
+#umount container's overlay setup with recursive lazy mount
+umount -lR $con_dir/$IMAGE_NAME/merged
 
 #remove entire container directory
 rm -rf $con_dir
