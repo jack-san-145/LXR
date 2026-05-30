@@ -25,7 +25,7 @@ TOKEN=$(curl -s \
 curl -s \
 -H "Authorization: Bearer $TOKEN" \
 -H "Accept: application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json" \
-https://registry-1.docker.io/v2/library/$IMAGE/manifests/latest > $LXR_IMAGE_REG/manifest.json
+https://registry-1.docker.io/v2/library/$IMAGE_NAME/manifests/latest > $LXR_IMAGE_REG/manifest.json
 
 
 
@@ -41,7 +41,7 @@ MANIFEST_DIGEST=$(jq -r '.manifests[] | select(.platform.architecture == "arm64"
 LAYERS=$(curl -s \
 -H "Authorization: Bearer $TOKEN" \
 -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
-https://registry-1.docker.io/v2/library/$IMAGE/manifests/$MANIFEST_DIGEST\
+https://registry-1.docker.io/v2/library/$IMAGE_NAME/manifests/$MANIFEST_DIGEST\
 | jq -r '.layers[].digest')
 
 
