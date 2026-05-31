@@ -53,3 +53,42 @@ rm -rf /var/lib/apt/lists/*
 umount -l /old_root
 
 
+
+#install dependencies to the actuall image rootfs
+echo -e "\n[+] Installing dependencies..."
+
+#mount temporary fs
+mount -t tmpfs tmpfs /tmp 
+
+#change mode for /tmp
+chmod 1777 /tmp 
+
+#update apt 
+apt-get update > /dev/null 2>&1
+
+#install nano editor
+apt-get install -y nano > /dev/null 2>&1
+echo "  [+] nano ✔"
+
+#install ip package to use all the iptables oerations
+apt-get install -y iproute2 > /dev/null 2>&1
+echo "  [+] iproute2 ✔"
+
+#install ping globally orelse between containers
+apt-get install -y iputils-ping > /dev/null 2>&1
+echo "  [+] iputils-ping ✔"
+
+
+#install git
+apt-get install -y git > /dev/null 2>&1
+echo "  [+] git ✔"
+
+
+echo "  [+] Installing code-server..."
+echo "  [+] This may take a few minutes. Please wait while the installation completes."
+
+#install code server to use vscode on web
+curl -fsSL https://code-server.dev/install.sh | sh 
+
+echo "  [+] code-server ✔"
+echo "  [+] Dependency Installation completed ✔"
