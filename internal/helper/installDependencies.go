@@ -6,25 +6,30 @@ import (
 	"lxr-d/internal/models"
 	"os"
 	"os/exec"
-	"strconv"
+	// "strconv"
 )
 
 func (h *Helper) InstallDependencies(cb *models.ContainerBuilder) error {
 
-	pass_env := "PASSWORD=" + cb.Container.ContainerName
+	//set image image as password for container initially
 
-	//executes install-dependencies.sh inside from container rootfs
+	img_name_env := "IMAGE_NAME=" + cb.Container.Image
+
 	cmd := exec.Command(
-		"nsenter",
-		"-r",
-		"--target", strconv.Itoa(cb.Container.PID),
-		"--pid", "--mount", "--uts", "--net",
-		"bash", "/home/script/install-dependencies.sh",
+		"sudo",
+		"-E",
+		"unshare",
+		"--pid",
+		"--mount",
+		"--fork",
+		"--",
+		"bash",
+		"../../script/install-dependencies.sh",
 	)
 
 	//inject env to the script
 	cmd.Env = append(os.Environ(),
-		pass_env,
+		img_name_env,
 	)
 
 	// Get a pipe to read the command's standard output and error (stdout and stderr)
