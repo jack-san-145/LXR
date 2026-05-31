@@ -6,10 +6,10 @@ set -ex
 con_dir="/home/LXR/LXR-data/$CONTAINER_NAME"
 
 #remove bridge veth and another veth automatically removed
-ip link delete $BRIDGE_VETH 
+ip link delete $BRIDGE_VETH || true
 
 #kill container's parent process(unshare)
-kill -9 $CONTAINER_PID
+kill -9 $CONTAINER_PID || true
 
 # wait until fully dead
 while kill -0 $CONTAINER_PID 2>/dev/null; do
@@ -17,7 +17,7 @@ while kill -0 $CONTAINER_PID 2>/dev/null; do
 done
 
 #umount container's overlay setup with recursive lazy mount
-umount -lR $con_dir/$IMAGE_NAME/merged
+umount -lR $con_dir/$IMAGE_NAME/merged || true
 
 #remove entire container directory
 rm -rf $con_dir

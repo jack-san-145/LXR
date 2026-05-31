@@ -69,8 +69,11 @@ func (h *Helper) SetupContainerNetworking(cb *models.ContainerBuilder) error {
 
 	}
 
+	conIP := h.NetworkConfig.NormalizeIP(cb.Container.IpAddress)
+	h.NetworkConfig.HostUsed += 1
+
 	//find largest ip by comparing container ip and network's LastUsedIP
-	largestIP := h.NetworkConfig.FindLargestIP(cb.Container.IpAddress, h.NetworkConfig.LastUsedIP)
+	largestIP := h.NetworkConfig.FindLargestIP(conIP, h.NetworkConfig.LastUsedIP)
 
 	//update largest ip address to network's LastUsedIP
 	h.NetworkConfig.SetLastUsedIp(largestIP)
