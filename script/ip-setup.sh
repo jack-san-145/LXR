@@ -2,7 +2,13 @@
 
 set -e
 
+
+
 echo "   [+] creating new veth pairs ✔"
+
+#delete if container_veth already exists
+ip link delete $CONTAINER_VETH || true
+
 #creationg new veth pairs 
 ip link add $CONTAINER_VETH type veth peer $BRIDGE_VETH
 
