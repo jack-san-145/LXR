@@ -14,8 +14,8 @@ func (h *Helper) GetContainerPid(name string) (string, bool) {
 
 	pid, ok := h.ContainerManager.ActiveContainers[name]
 
-	if pid != nil {
-		return strconv.Itoa(*pid), ok
+	if pid != 0 {
+		return strconv.Itoa(pid), ok
 	}
 	return "", false
 }
@@ -74,7 +74,7 @@ func (h *Helper) SetContainerActive(containerName string) {
 	defer h.ContainerManager.Mu.Unlock()
 
 	PID := h.ContainerManager.AllContainers[containerName].PID
-	h.ContainerManager.ActiveContainers[containerName] = &PID
+	h.ContainerManager.ActiveContainers[containerName] = PID
 }
 
 // remove container from ActiveContainers
