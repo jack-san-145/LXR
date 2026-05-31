@@ -1,45 +1,40 @@
 package handlers
 
 import (
+	"bufio"
+	"log"
 	"lxr-d/internal/models"
-	"lxr-d/internal/response"
+	// "lxr-d/internal/response"
 	"net/http"
 )
 
 func (h *Handler) StartHandler(w http.ResponseWriter, r *http.Request) {
 
-	con_name := r.URL.Query().Get("container_name")
+	// con_name := r.URL.Query().Get("container_name")
+	var (
+		conBuilder models.ContainerBuilder
+		buf        *bufio.ReadWriter
+		err        error
+	)
 
-	//check whether the container is active or not
-	active := h.Helper.IsContainerActive(con_name)
-	if active {
-		response.WriteJson(w, models.StartResponse{
-			AlreadyActive: true,
-		})
+	//hijack the http connnection and stream i/o in real-time over uds
+	hijacker, ok := w.(http.Hijacker)
+	if !ok {
+		http.Error(w, "Hijack not supported", http.StatusInternalServerError)
+		return
+	}
+	conBuilder.Conn, buf, err = hijacker.Hijack()
+	if err != nil {
+		log.Println("Hijack error:", err)
 		return
 	}
 
-	//check whether the container is exists or not ,if exists make it active
-	exists := h.Helper.ContainerExists(con_name)
-	if exists {
-		err := h.Helper.UnfreezeContainer(con_name)
-		if err != nil {
+	//write http success response manually
+	buf.WriteString("HTTP/1.1 200 OK\r\n")
+	buf.WriteString("Content-Type: text/plain\r\n")
+	buf.WriteString("\r\n")
+	buf.Flush()
 
-			response.WriteJson(w, models.StartResponse{
-				Failed: true,
-			})
-		} else {
-			response.WriteJson(w, models.StartResponse{
-				Activated: true,
-			})
-		}
-
-		return
-	}
-
-	//if container doesn't exists returns response
-	response.WriteJson(w, models.StartResponse{
-		DoesNotExists: true,
-	})
+	conBuilder.Conn.Write([]byte("Connection Hijacked"))
 
 }
