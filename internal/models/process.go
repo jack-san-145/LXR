@@ -7,7 +7,7 @@ type PsContainer struct {
 	PID           int    `json:"pid"`
 	Status        string `json:"status"`
 	IPAddress     string `json:"ip_address"`
-	Port          int    `json:"port"`
+	Ports         []int  `json:"ports"`
 }
 
 type PsResponse struct {
