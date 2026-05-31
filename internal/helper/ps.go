@@ -21,7 +21,7 @@ func (h *Helper) GetActiveContainers() []models.PsContainer {
 			PID:           con.PID,
 			Status:        "running",
 			IPAddress:     con.IpAddress,
-			Port:          con.Port,
+			Ports:         con.Ports,
 		})
 	}
 
@@ -48,7 +48,7 @@ func (h *Helper) GetAllContainers() []models.PsContainer {
 			PID:           con.PID,
 			Status:        status,
 			IPAddress:     con.IpAddress,
-			Port:          con.Port,
+			Ports:         con.Ports,
 		})
 	}
 
