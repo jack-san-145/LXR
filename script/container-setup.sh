@@ -48,3 +48,20 @@ umount -l /old_root
 
 
 
+#configure code-server yml with container name as password
+export HOME=/home/container
+
+echo -e "\n  [+] configuring code-server.."
+
+cat << EOF > $HOME/.config/code-server/config.yaml
+bind-addr: 0.0.0.0:9000
+auth: password
+password: $PASSWORD
+cert: false
+EOF
+
+
+
+
+
+
