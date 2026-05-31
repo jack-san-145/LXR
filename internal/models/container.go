@@ -14,8 +14,8 @@ type Container struct {
 	IpAddress     string `json:"ip_address"`
 	Ports         []int  `json:"ports"`
 	Active        bool   `json:"active"`
-	ConVeth       string
-	BrVeth        string
+	ConVeth       string `json:"con_veth"`
+	BrVeth        string `json:"br_veth"`
 }
 
 // container creater with client connection and channel
