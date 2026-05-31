@@ -27,13 +27,13 @@ type ContainerBuilder struct {
 
 type ContainerManager struct {
 	AllContainers    map[string]*Container
-	ActiveContainers map[string]*int
+	ActiveContainers map[string]int
 	Mu               sync.RWMutex
 }
 
 func NewContainerManager() *ContainerManager {
 	return &ContainerManager{
 		AllContainers:    map[string]*Container{},
-		ActiveContainers: map[string]*int{},
+		ActiveContainers: map[string]int{},
 	}
 }
