@@ -19,15 +19,17 @@ cd /
 
 #mount proc (virtual filesystem) ,sysfs,tmpfs
 mount -t proc proc /proc
-mount -t sysfs sysfs /sys
 mount -t tmpfs tmpfs /tmp
 
 #create fresh /dev inside the new rootfs
 mount -t tmpfs tmpfs /dev
 
 #mount the host's /dev/null to new rootfs /dev/null
-touch /dev/null
+touch /dev/null /dev/random /dev/urandom
+
 mount --bind /old_root/dev/null /dev/null
+mount --bind /old_root/dev/random /dev/random
+mount --bind /old_root/dev/urandom /dev/urandom
 
 #mount pts to /dev/pts and add symlink for ptmx
 mkdir -p /dev/pts
@@ -43,5 +45,6 @@ hostname $CONTAINER_NAME
 #clear old rootfs inside container
 umount -l /old_root
 
-#root process of the container
-exec sleep infinity
+
+
+
