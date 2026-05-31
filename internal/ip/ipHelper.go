@@ -21,6 +21,10 @@ func (nc *NetworkConfig) SetLastUsedIp(ip string) {
 	nc.LastUsedIP = ip
 }
 
+func (nc *NetworkConfig) NormalizeIP(ip string) string {
+	return strings.Split(ip, "/")[0]
+}
+
 // to create the ip with all 4 octets
 func (nc *NetworkConfig) MakeIp(first, second, third, fourth int) string {
 	return fmt.Sprintf("%v.%v.%v.%v/%v", first, second, third, fourth, nc.CIDR)
