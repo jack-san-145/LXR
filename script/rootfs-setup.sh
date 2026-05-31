@@ -15,7 +15,7 @@ mkdir -p "$container_path"/{upper,work,merged}
 # - workdir: internal workspace used by kernel
 # - merged: final combined rootfs used by container
 mount -t overlay overlay \
-  -o lowerdir="$image_path/rootfs",\
+  -o lowerdir="$image_path/modified_rootfs",\
 upperdir="$container_path/upper",\
 workdir="$container_path/work" \
   "$container_path/merged"
@@ -32,7 +32,18 @@ echo "  [+] add dependency script ✔"
 #create directory /dev
 mkdir -p "$container_path/merged"/dev
 
+#make upper directory old_root writable
 mkdir -p $container_path/upper/old_root
+
+# override entire /home from upper layer
+mkdir -p "$container_path/upper/home"
+
+# now create container home
+mkdir -p "$container_path/upper/home/container"
+
+mkdir -p "$container_path/upper/home/container/.config/code-server"
+
+chown -R 1000:1000 "$container_path/upper/home"
 
 echo "  [+] Rootfs setup completed ✔"
 
