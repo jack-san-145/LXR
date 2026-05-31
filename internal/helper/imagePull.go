@@ -9,7 +9,8 @@ import (
 
 func (h *Helper) PullImage(cb *models.ContainerBuilder) error {
 
-	image_env := "IMAGE=" + cb.Container.Image
+	image_env := "IMAGE_NAME=" + cb.Container.Image
+
 	cmd := exec.Command("../../script/pull-image.sh")
 	cmd.Env = append(cmd.Environ(),
 		image_env,

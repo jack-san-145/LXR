@@ -12,7 +12,6 @@ import (
 
 func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
-	log.Println("comming inside create")
 	var (
 		conBuilder models.ContainerBuilder
 		buf        *bufio.ReadWriter
@@ -70,10 +69,20 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 			conBuilder.Conn.Write([]byte("Image Pull Failed\n"))
 			conBuilder.Quit <- struct{}{} //pass quit signal to terminal container creation process
 		}
+
+		//install dependency modules inside image rootfs
+		err = h.Helper.InstallDependencies(&conBuilder)
+		if err != nil {
+			conBuilder.Conn.Write([]byte("Container dependency installation failed..\n"))
+			conBuilder.Quit <- struct{}{}
+			go h.Helper.KillContainer(conBuilder.Container) //kill failed container
+			return
+		}
+
 	}
 
 	//if not already exists creats new container environment (only setup containers rootfs)
-	conBuilder.Conn.Write([]byte("[+] Setting up container rootfs...\n"))
+	conBuilder.Conn.Write([]byte("\n[+] Setting up container rootfs...\n"))
 	err = h.Helper.RootfsSetup(&conBuilder)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Rootfs setup failed..\n"))
@@ -83,7 +92,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//setup new container with rootfs
-	conBuilder.Conn.Write([]byte("[+] Building container environment with rootfs..\n"))
+	conBuilder.Conn.Write([]byte("\n[+] Building container environment with rootfs..\n"))
 	err = h.Helper.ContainerSetup(conBuilder.Container)
 	if err != nil {
 		conBuilder.Conn.Write([]byte("Container setup failed..\n"))
@@ -119,18 +128,10 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//install dependency modules inside new container
-	err = h.Helper.InstallDependencies(&conBuilder)
-	if err != nil {
-		conBuilder.Conn.Write([]byte("Container dependency installation failed..\n"))
-		conBuilder.Quit <- struct{}{}
-		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
-		return
-	}
-
 	//freeze container immediately after container creation
 	h.Helper.FreezeContainer(conBuilder.Container.ContainerName)
 
+	conBuilder.Conn.Write([]byte("[+] code-server activated at port 9000 ✔\n"))
 	containerDetails := fmt.Sprintf("\nCONTAINER ID: %v              CONTAINER NAME: %v", conBuilder.Container.ContainerId, conBuilder.Container.ContainerName)
 	conBuilder.Conn.Write([]byte(containerDetails + "\n"))
 
