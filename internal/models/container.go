@@ -13,6 +13,7 @@ type Container struct {
 	Bridge        string `json:"bridge"`
 	IpAddress     string `json:"ip_address"`
 	Ports         []int  `json:"ports"`
+	Freezed       bool   `json:"freezed"`
 	Active        bool   `json:"active"`
 	ConVeth       string `json:"con_veth"`
 	BrVeth        string `json:"br_veth"`
