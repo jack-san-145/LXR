@@ -106,3 +106,18 @@ func (h *Helper) SetContainerStateUnfreezed() {
 	}
 
 }
+
+// to set specified container freezed=true
+func (h *Helper) SetContainerStateFreezed(containerName string) {
+
+	h.ContainerManager.Mu.Lock()
+	defer h.ContainerManager.Mu.Unlock()
+
+	for _, con := range h.ContainerManager.AllContainers {
+		if con.ContainerName == containerName {
+			con.Freezed = true
+			return
+		}
+	}
+
+}
