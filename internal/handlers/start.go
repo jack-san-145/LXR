@@ -6,7 +6,7 @@ import (
 	"log"
 	"lxr-d/internal/models"
 	"net/http"
-	// "time"
+	"time"
 )
 
 func (h *Handler) StartHandler(w http.ResponseWriter, r *http.Request) {
@@ -80,4 +80,19 @@ func (h *Handler) StartHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//setup new container with rootfs
+	conBuilder.Conn.Write([]byte("\n[+] Building container environment with rootfs..\n"))
+	err = h.Helper.ContainerSetup(conBuilder.Container)
+	if err != nil {
+		conBuilder.Conn.Write([]byte("Container setup failed..\n"))
+		conBuilder.Quit <- struct{}{}                   //pass quit signal to terminal container creation process
+		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
+		return
+	}
+
+	h.Helper.SetContainerActive(conBuilder.Container.ContainerName) //set new container to active state
+
+	time.Sleep(time.Second * 3) //wait 3sec to complete container setup
+
+	conBuilder.Quit <- struct{}{}
 }
