@@ -12,10 +12,11 @@ func (h *Helper) SaveContainerState() {
 	h.ContainerManager.Mu.RLock()
 	defer h.ContainerManager.Mu.RUnlock()
 
+	h.SetContainerStateUnfreezed() //to set all containers freezed=false
+
 	backup := models.BackupContainerState{
 		ContainerManager: models.BackupContainerManager{
-			AllContainers:    h.ContainerManager.AllContainers,
-			ActiveContainers: h.ContainerManager.ActiveContainers,
+			AllContainers: h.ContainerManager.AllContainers,
 		},
 		NetworkConfig: *h.NetworkConfig,
 	}
@@ -58,16 +59,14 @@ func (h *Helper) BackupContainerState() {
 		backup.ContainerManager.AllContainers = make(map[string]*models.Container)
 	}
 
-	if backup.ContainerManager.ActiveContainers == nil {
-		backup.ContainerManager.ActiveContainers = make(map[string]int)
-	}
+	//container doesn't active after daemon shutdown so keep active contaier as empty
+	backup.ContainerManager.ActiveContainers = make(map[string]int)
 
 	h.ContainerManager.Mu.Lock()
 	defer h.ContainerManager.Mu.Unlock()
 
 	//assigns existing container state values to current container state
 	h.ContainerManager.AllContainers = backup.ContainerManager.AllContainers
-	h.ContainerManager.ActiveContainers = backup.ContainerManager.ActiveContainers
 
 	//store backupState ipStack to current runtime containerstate
 	h.NetworkConfig.IPStack = backup.NetworkConfig.IPStack
