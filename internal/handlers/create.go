@@ -51,7 +51,7 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	//check the container already exists or not
-	exists := h.Helper.ContainerExists(conBuilder.Container.ContainerName)
+	_, exists := h.Helper.ContainerExists(conBuilder.Container.ContainerName)
 	if exists {
 		conBuilder.Conn.Write([]byte("Container Already Exists\n"))
 		conBuilder.Quit <- struct{}{}
@@ -130,6 +130,8 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	//freeze container immediately after container creation
 	h.Helper.FreezeContainer(conBuilder.Container.ContainerName)
+
+	conBuilder.Container.Ports = append(conBuilder.Container.Ports, 9000) //add exposed code-server port(9000)
 
 	conBuilder.Conn.Write([]byte("[+] code-server activated at port 9000 ✔\n"))
 	containerDetails := fmt.Sprintf("\nCONTAINER ID: %v              CONTAINER NAME: %v", conBuilder.Container.ContainerId, conBuilder.Container.ContainerName)
