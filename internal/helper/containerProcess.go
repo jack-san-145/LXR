@@ -39,13 +39,13 @@ func (h *Helper) GetChildPID(ParentPID int) (string, error) {
 }
 
 // check container exists or not
-func (h *Helper) ContainerExists(name string) bool {
+func (h *Helper) ContainerExists(name string) (*models.Container, bool) {
 
 	h.ContainerManager.Mu.RLock()
 	defer h.ContainerManager.Mu.RUnlock()
 
-	_, ok := h.ContainerManager.AllContainers[name]
-	return ok
+	container, ok := h.ContainerManager.AllContainers[name]
+	return container, ok
 }
 
 // check container currently active or not
@@ -93,4 +93,16 @@ func (h *Helper) RemoveContainer(containerName string) {
 	defer h.ContainerManager.Mu.Unlock()
 
 	delete(h.ContainerManager.AllContainers, containerName)
+}
+
+// to set all containers freezed=false
+func (h *Helper) SetContainerStateUnfreezed() {
+
+	h.ContainerManager.Mu.Lock()
+	defer h.ContainerManager.Mu.Unlock()
+
+	for _, con := range h.ContainerManager.AllContainers {
+		con.Freezed = false
+	}
+
 }
