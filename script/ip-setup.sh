@@ -2,15 +2,14 @@
 
 set -e
 
-
-
 echo "   [+] creating new veth pairs ✔"
 
 #delete if container_veth already exists
-ip link delete $CONTAINER_VETH || true
+ip link delete $CONTAINER_VETH 2>/dev/null || true
+ip link delete "$BRIDGE_VETH" 2>/dev/null || true
 
 #creationg new veth pairs 
-ip link add $CONTAINER_VETH type veth peer $BRIDGE_VETH
+ip link add $CONTAINER_VETH type veth peer name $BRIDGE_VETH
 
 
 #attach one side veth to bridge lxr0

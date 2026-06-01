@@ -64,7 +64,9 @@ EOF
 echo "[+] code-server activated at port 9000 ✔"
 
 #run the code-server as root process(container INIT)
-exec code-server --bind-addr 0.0.0.0:9000 
+exec code-server --bind-addr 0.0.0.0:9000 &
+
+exec sleep infinity
 
 
 

@@ -6,7 +6,7 @@ set -ex
 con_dir="/home/LXR/LXR-data/$CONTAINER_NAME"
 
 #remove bridge veth and another veth automatically removed
-ip link delete $BRIDGE_VETH 2>/dev/null || true
+ip link delete $BRIDGE_VETH > /dev/null 2>&1 || true
 
 #kill container's parent process(unshare)
 kill -9 $CONTAINER_PID || true
