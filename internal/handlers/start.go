@@ -94,5 +94,15 @@ func (h *Handler) StartHandler(w http.ResponseWriter, r *http.Request) {
 
 	time.Sleep(time.Second * 3) //wait 3sec to complete container setup
 
+	//setup networking for container
+	conBuilder.Conn.Write([]byte("[+] Setting up container networking..\n"))
+	err = h.Helper.SetupContainerNetworking(&conBuilder)
+	if err != nil {
+		conBuilder.Conn.Write([]byte("Container networking failed..\n"))
+		conBuilder.Quit <- struct{}{}
+		go h.Helper.KillContainer(conBuilder.Container) //kill failed container
+		return
+	}
+
 	conBuilder.Quit <- struct{}{}
 }
