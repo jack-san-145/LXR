@@ -13,7 +13,10 @@ func (h *Handler) StopHandler(w http.ResponseWriter, r *http.Request) {
 	//check whether the container is active or not
 	active := h.Helper.IsContainerActive(containerName)
 	if active {
+
 		h.Helper.FreezeContainer(containerName)
+		h.Helper.SetContainerStateFreezed(containerName)
+
 		response.WriteJson(w, models.StopResponse{
 			Exists:  true,
 			Stopped: true,
@@ -22,7 +25,7 @@ func (h *Handler) StopHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//check whether the container is exists or not
-	exists := h.Helper.ContainerExists(containerName)
+	_, exists := h.Helper.ContainerExists(containerName)
 	if exists {
 		response.WriteJson(w, models.StopResponse{
 			Exists:  true,
