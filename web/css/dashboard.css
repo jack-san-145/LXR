@@ -1,0 +1,82 @@
+.dash-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--sp-5);
+  margin-top: var(--sp-5);
+  align-items: start;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: flex;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-sm);
+}
+.activity-item:last-child { border-bottom: none; }
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+  background: var(--muted);
+}
+.activity-dot.success { background: var(--success); }
+.activity-dot.error { background: var(--danger); }
+
+.activity-text { color: var(--text-dim); }
+.activity-time { color: var(--faint); font-size: var(--fs-xs); margin-top: 2px; }
+
+.local-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--faint);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-left: var(--sp-2);
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+}
+
+.quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: left;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.quick-action:hover { border-color: var(--primary-dim); background: var(--surface-hover); }
+.quick-action-icon {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--primary-wash);
+  color: var(--primary-strong);
+}
+.quick-action-title { font-weight: 700; font-size: var(--fs-sm); }
+.quick-action-desc { color: var(--muted); font-size: var(--fs-xs); }
+
+@media (max-width: 980px) {
+  .dash-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .quick-actions { grid-template-columns: 1fr; }
+}

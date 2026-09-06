@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LXR — Linux Container Runtime</title>
+<meta name="description" content="Self-hosted web console for the LXR Linux container runtime." />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+<!--
+  Configuration hooks, read by js/api.js:
+    window.LXR_API_BASE   — override the API base path (defaults to "/api")
+    window.LXR_DEMO_MODE  — set to true to preview the UI with mock data,
+                             with no LXR daemon running. Off by default.
+-->
+<script>
+  window.LXR_API_BASE = window.LXR_API_BASE || '/api';
+  window.LXR_DEMO_MODE = false;
+</script>
+
+<link rel="stylesheet" href="css/reset.css" />
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/dashboard.css" />
+<link rel="stylesheet" href="css/containers.css" />
+<link rel="stylesheet" href="css/container.css" />
+<link rel="stylesheet" href="css/terminal.css" />
+<link rel="stylesheet" href="css/images.css" />
+<link rel="stylesheet" href="css/network.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+<!-- The app shell (sidebar/header/main) is rendered entirely by js/app.js -->
+
+<script src="js/utils.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/state.js"></script>
+<script src="js/stream.js"></script>
+<script src="js/api.js"></script>
+<script src="js/demo.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/components.js"></script>
+<script src="js/terminal.js"></script>
+<script src="js/router.js"></script>
+
+<script src="js/pages/dashboard.js"></script>
+<script src="js/pages/containers.js"></script>
+<script src="js/pages/container.js"></script>
+<script src="js/pages/terminal.js"></script>
+<script src="js/pages/images.js"></script>
+<script src="js/pages/network.js"></script>
+<script src="js/pages/settings.js"></script>
+
+<script src="js/app.js"></script>
+</body>
+</html>
