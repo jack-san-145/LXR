@@ -128,8 +128,8 @@ func (h *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//freeze container immediately after container creation
-	h.Helper.FreezeContainer(conBuilder.Container.ContainerName)
+	// //freeze container immediately after container creation
+	// h.Helper.FreezeContainer(conBuilder.Container.ContainerName)
 
 	conBuilder.Container.Ports = append(conBuilder.Container.Ports, 9000) //add exposed code-server port(9000)
 

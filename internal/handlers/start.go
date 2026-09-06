@@ -114,5 +114,7 @@ func (h *Handler) StartHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	conBuilder.Conn.Write([]byte("\nContainer Running...\n"))
+
 	conBuilder.Quit <- struct{}{}
 }
