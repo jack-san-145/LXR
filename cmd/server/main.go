@@ -46,19 +46,29 @@ func main() {
 	//creates a chi router with LXR handler
 	router := NewRouter(Lxr.Handler)
 
-	listener := Lxr.Helper.InitDaemon() //start the daemon initialization and return listener for unix sock connection
+	listener, err := Lxr.Helper.InitDaemon() //start the daemon initialization and return listener for unix sock connection
+	if err != nil {
+		log.Panic(err.Error())
+	}
 
 	Lxr.Helper.BackupContainerState() //backup existing container state
 
 	go runServer(router, listener) //start the go server in seperate go routine
 
+	go runTCPServer(router) // start the tcp/http server to listen web traffic
+
 	//context to listen the interrupt signal
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+	log.Println("Waiting for signal...")
 	<-ctx.Done()
+
+	log.Println("Signal received")
+	log.Println("Saving container state...")
 
 	//when interrupt occurs save container state ,then stop the daemon
 	Lxr.Helper.SaveContainerState()
+	log.Println("State saved")
 }
 
 func runServer(router *chi.Mux, listener net.Listener) {
@@ -67,5 +77,14 @@ func runServer(router *chi.Mux, listener net.Listener) {
 	err := http.Serve(listener, router)
 	if err != nil {
 		log.Fatal("Server Failed to start: ", err)
+	}
+}
+
+func runTCPServer(router *chi.Mux) {
+	log.Println("TCP HTTP server listening on :8081")
+
+	err := http.ListenAndServe("0.0.0.0:8081", router)
+	if err != nil {
+		log.Println("TCP server stopped:", err)
 	}
 }
