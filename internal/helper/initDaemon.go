@@ -4,11 +4,12 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/exec"
 	"os/user"
 	"strconv"
 )
 
-func (h *Helper) InitDaemon() net.Listener {
+func (h *Helper) InitDaemon() (net.Listener, error) {
 
 	lxr_sock := "/var/run/lxr.sock"
 	err := os.Remove(lxr_sock)
@@ -37,5 +38,16 @@ func (h *Helper) InitDaemon() net.Listener {
 		log.Println("chmod Error: ", err)
 	}
 
-	return listener
+	//run the lxr-init script
+	cmd := exec.Command("../../script/lxr-init.sh")
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err = cmd.Run()
+	if err != nil {
+		log.Println("LXR Initialization Failed..", err)
+	}
+
+	return listener, err
 }
