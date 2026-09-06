@@ -58,6 +58,5 @@ func (h *Helper) ContainerSetup(container *models.Container) error {
 		cmd.Wait()
 	}()
 
-	container.Ports = append(container.Ports, 9000) //add exposed code-server port(9000)
 	return nil
 }

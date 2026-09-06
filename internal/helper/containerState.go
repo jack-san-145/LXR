@@ -9,10 +9,10 @@ import (
 
 func (h *Helper) SaveContainerState() {
 
+	h.SetContainerStateUnfreezed() //to set all containers freezed=false
+
 	h.ContainerManager.Mu.RLock()
 	defer h.ContainerManager.Mu.RUnlock()
-
-	h.SetContainerStateUnfreezed() //to set all containers freezed=false
 
 	backup := models.BackupContainerState{
 		ContainerManager: models.BackupContainerManager{
