@@ -24,10 +24,10 @@ echo "  [+] overlay filesystem ✔"
 
 # add dependency script into container
 mkdir -p "$container_path/merged/home/script"
-cp "/home/jack/LXR/LXR-d/script/install-dependencies.sh" \
-   "$container_path/merged/home/script"
+# cp "/home/jack/LXR/LXR-d/script/install-dependencies.sh" \
+#    "$container_path/merged/home/script"
 
-echo "  [+] add dependency script ✔"
+# echo "  [+] add dependency script ✔"
 
 #create directory /dev
 mkdir -p "$container_path/merged"/dev
